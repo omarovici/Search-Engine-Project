@@ -32,6 +32,14 @@ function getFavicon(url) {
     }
 }
 
+function extractDomain(url) {
+    try {
+        return new URL(url).hostname.replace('www.', '');
+    } catch {
+        return url;
+    }
+}
+
 // Dark mode logic
 const darkModeBtn = document.getElementById('darkModeToggle');
 function setDarkMode(on) {
@@ -43,6 +51,43 @@ function setDarkMode(on) {
 darkModeBtn.onclick = () => setDarkMode(!document.body.classList.contains('dark'));
 // On load, restore dark mode
 if (localStorage.getItem('darkMode') === '1') setDarkMode(true);
+
+// Voice search logic
+const micBtn = document.getElementById('micBtn');
+const micIcon = document.getElementById('micIcon');
+const searchInput = document.getElementById('searchInput');
+let recognition;
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    micBtn.onclick = function() {
+        recognition.start();
+        micIcon.textContent = '🎙️';
+        micBtn.disabled = true;
+    };
+    recognition.onresult = function(event) {
+        let transcript = event.results[0][0].transcript;
+        transcript = transcript.replace(/[.\u06D4]+$/g, '').trim(); // Remove trailing dot(s) (English/Arabic)
+        searchInput.value = transcript;
+        micIcon.textContent = '🎤';
+        micBtn.disabled = false;
+        // Optionally, auto-submit the form
+        document.getElementById('searchForm').requestSubmit();
+    };
+    recognition.onerror = function() {
+        micIcon.textContent = '🎤';
+        micBtn.disabled = false;
+    };
+    recognition.onend = function() {
+        micIcon.textContent = '🎤';
+        micBtn.disabled = false;
+    };
+} else {
+    micBtn.style.display = 'none';
+}
 
 document.getElementById('searchForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -69,7 +114,8 @@ document.getElementById('searchForm').addEventListener('submit', async function(
         const info = `<div style='color:#2a5298;font-size:1em;margin-bottom:10px;'>${data.length} results found in ${(t1-t0).toFixed(1)} ms</div>`;
         // Show only first 5 results in preview
         const previewCount = 5;
-        const preview = data.slice(0, previewCount).map(item => {
+        let shownCount = previewCount;
+        const renderPreview = () => data.slice(0, shownCount).map(item => {
             let url = item.Url || item.url;
             if (url.endsWith('.html')) {
                 url += (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
@@ -80,71 +126,22 @@ document.getElementById('searchForm').addEventListener('submit', async function(
             } else if (url.endsWith('.html')) {
                 favicon = `<img class="result-favicon" src="${getFavicon(url)}" alt="favicon"/>`;
             }
+            const domain = extractDomain(url);
             return `
                 <div class="result-card">
-                    <a href="${url}" class="result-title" target="_blank">${favicon}${item.Url || item.url}</a>
+                    <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-domain">${domain}</span><span class="result-url">${item.Url || item.url}</span></a>
                     <div class="result-snippet">Count: ${item.Count ?? item.count}</div>
                 </div>
             `;
         }).join('');
         let showMoreBtn = '';
-        if (data.length > previewCount) {
-            showMoreBtn = `<button class="show-more-btn" id="showMoreBtn">Show All Results</button>`;
+        if (data.length > shownCount) {
+            showMoreBtn = `<button class="show-more-btn" id="showMoreBtn">Show More</button>`;
         }
-        resultsDiv.innerHTML = info + preview + showMoreBtn;
-        // Modal logic
-        if (data.length > previewCount) {
+        resultsDiv.innerHTML = info + renderPreview() + showMoreBtn;
+        if (data.length > shownCount) {
             document.getElementById('showMoreBtn').onclick = function() {
-                const modal = document.getElementById('resultsModal');
-                const backdrop = document.getElementById('modalBackdrop');
-                const modalResults = document.getElementById('modalResults');
-                let modalLoadedCount = 0;
-                const modalBatchSize = 5;
-                // Helper to render next batch
-                function renderNextModalBatch() {
-                    const nextBatch = data.slice(modalLoadedCount, modalLoadedCount + modalBatchSize).map(item => {
-                        let url = item.Url || item.url;
-                        if (url.endsWith('.html')) {
-                            url += (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
-                        }
-                        let favicon = '';
-                        if (url.startsWith('http')) {
-                            favicon = `<img class="result-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=32" alt="favicon"/>`;
-                        } else if (url.endsWith('.html')) {
-                            favicon = `<img class="result-favicon" src="${getFavicon(url)}" alt="favicon"/>`;
-                        }
-                        return `
-                            <div class="result-card">
-                                <a href="${url}" class="result-title" target="_blank">${favicon}${item.Url || item.url}</a>
-                                <div class="result-snippet">Count: ${item.Count ?? item.count}</div>
-                            </div>
-                        `;
-                    }).join('');
-                    modalResults.insertAdjacentHTML('beforeend', nextBatch);
-                    modalLoadedCount += modalBatchSize;
-                }
-                // Initial batch
-                modalResults.innerHTML = '';
-                modalLoadedCount = 0;
-                renderNextModalBatch();
-                // Infinite scroll logic
-                function onModalScroll() {
-                    if (modalResults.scrollTop + modalResults.clientHeight >= modalResults.scrollHeight - 10) {
-                        if (modalLoadedCount < data.length) {
-                            renderNextModalBatch();
-                        }
-                    }
-                }
-                modalResults.removeEventListener('scroll', onModalScroll); // Remove previous if any
-                modalResults.addEventListener('scroll', onModalScroll);
-                // Optional: allow click to load more if not enough to scroll
-                modalResults.onclick = function() {
-                    if (modalLoadedCount < data.length && modalResults.scrollHeight <= modalResults.clientHeight + 10) {
-                        renderNextModalBatch();
-                    }
-                };
-                modal.style.display = 'block';
-                backdrop.style.display = 'block';
+                openModalWithPagination(data, query, previewCount);
             };
         }
         // Modal close logic
@@ -161,7 +158,46 @@ document.getElementById('searchForm').addEventListener('submit', async function(
     }
 });
 
-// Restore last search
+function openModalWithPagination(data, query, pageSize) {
+    const modal = document.getElementById('resultsModal');
+    const backdrop = document.getElementById('modalBackdrop');
+    const modalResults = document.getElementById('modalResults');
+    let shownCount = pageSize;
+    function renderModalResults() {
+        modalResults.innerHTML = data.slice(0, shownCount).map(item => {
+            let url = item.Url || item.url;
+            if (url.endsWith('.html')) {
+                url += (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
+            }
+            let favicon = '';
+            if (url.startsWith('http')) {
+                favicon = `<img class="result-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=32" alt="favicon"/>`;
+            } else if (url.endsWith('.html')) {
+                favicon = `<img class="result-favicon" src="${getFavicon(url)}" alt="favicon"/>`;
+            }
+            const domain = extractDomain(url);
+            return `
+                <div class="result-card">
+                    <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-domain">${domain}</span><span class="result-url">${item.Url || item.url}</span></a>
+                    <div class="result-snippet">Count: ${item.Count ?? item.count}</div>
+                </div>
+            `;
+        }).join('');
+    }
+    renderModalResults();
+    modal.style.display = 'block';
+    backdrop.style.display = 'block';
+    // Infinite scroll logic
+    modalResults.onscroll = function() {
+        if (modalResults.scrollTop + modalResults.clientHeight >= modalResults.scrollHeight - 10) {
+            if (shownCount < data.length) {
+                shownCount += pageSize;
+                renderModalResults();
+            }
+        }
+    };
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const highlight = params.get('highlight');

@@ -14,12 +14,26 @@
         <div id="bigDataBadge">BigData Project</div>
         <h1>Search Engine</h1>
         <form id="searchForm">
-            <input type="text" id="searchInput" placeholder="Enter your query..." required>
-            <select id="orderBySelect">
-                <option value="pagerank">PageRank</option>
-                <option value="count">Count</option>
-            </select>
-            <button type="submit">Search</button>
+            <div class="search-form-row">
+                <input type="text" id="searchInput" placeholder="Enter your query..." required>
+                <button type="button" id="micBtn" title="Voice Search" class="search-mic">
+                    <span id="micIcon" aria-label="Voice Search">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="24" height="24" fill="none" />
+                            <path
+                                d="M12 16c1.66 0 3-1.34 3-3V7c0-1.66-1.34-3-3-3s-3 1.34-3 3v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-2.08c3.39-0.49 6-3.39 6-6.92h-2z"
+                                fill="#2a5298" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
+            <div class="search-form-row">
+                <button type="submit">Search</button>
+                <select id="orderBySelect">
+                    <option value="pagerank">PageRank</option>
+                    <option value="count" selected>Count</option>
+                </select>
+            </div>
         </form>
         <div id="spinner"></div>
         <div id="results"></div>
