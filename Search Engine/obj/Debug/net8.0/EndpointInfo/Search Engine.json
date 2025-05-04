@@ -1,0 +1,38 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Search Engine",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/SearchEngine": {
+      "get": {
+        "tags": [
+          "SearchEngine"
+        ],
+        "parameters": [
+          {
+            "name": "word",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": { }
+}

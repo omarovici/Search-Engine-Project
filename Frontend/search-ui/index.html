@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Engine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <button id="darkModeToggle">🌙 Dark Mode</button>
+    <div class="container">
+        <div id="bigDataBadge">BigData Project</div>
+        <h1>Search Engine</h1>
+        <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Enter your query..." required>
+            <select id="orderBySelect">
+                <option value="pagerank">PageRank</option>
+                <option value="count">Count</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <div id="spinner"></div>
+        <div id="results"></div>
+    </div>
+    <button id="backToTop" title="Back to Top">↑</button>
+    <section id="about-section">
+        <h2>About the Project</h2>
+        <p class="about-text">
+            This Search Engine project is a comprehensive Big Data solution that crawls, indexes, and ranks web pages
+            using advanced algorithms. It features a custom-built web scraper, inverted index, and PageRank
+            implementation, all integrated with a modern, interactive frontend. The system enables fast, relevant search
+            results and showcases the power of data engineering, backend, and frontend collaboration.
+        </p>
+    </section>
+    <footer>
+        &copy; 2025 Abdo ElDeeb &mdash; Best Search Engine Project for <b>BigData</b> Subject
+    </footer>
+    <section id="team-section">
+        <h2>Meet Our Team</h2>
+        <div class="team-grid">
+            <a class="team-member" href="https://www.example.com/eldeeb" target="_blank">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Abd El-Rahman Eldeeb">
+                <h3>Abd El-Rahman Eldeeb</h3>
+                <p>Web Scraper</p>
+            </a>
+            <a class="team-member" href="https://www.example.com/omar" target="_blank">
+                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Omar Khalid">
+                <h3>Omar Khalid</h3>
+                <p>.Net Developer</p>
+            </a>
+            <a class="team-member" href="https://www.example.com/shehap" target="_blank">
+                <img src="https://randomuser.me/api/portraits/men/77.jpg" alt="Shehap Yasser">
+                <h3>Shehap Yasser</h3>
+                <p>Python Developer</p>
+            </a>
+            <a class="team-member" href="https://www.example.com/haneen" target="_blank">
+                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Haneen Hassan">
+                <h3>Haneen Hassan</h3>
+                <p>Frontend Developer</p>
+            </a>
+        </div>
+    </section>
+    <div id="resultsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>All Results</h2>
+            <div id="modalResults" class="modal-results-list"></div>
+        </div>
+    </div>
+    <div id="modalBackdrop" class="modal-backdrop"></div>
+    <script src="script.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            const params = new URLSearchParams(window.location.search);
+            const highlight = params.get('highlight');
+            if (highlight) {
+                function walk(node) {
+                    if (node.nodeType === 3) {
+                        const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
+                        const replaced = node.nodeValue.replace(regex, '<span style="background:#ffe066;color:#222;border-radius:3px;padding:0 2px;">$1</span>');
+                        if (replaced !== node.nodeValue) {
+                            const span = document.createElement('span');
+                            span.innerHTML = replaced;
+                            node.replaceWith(...span.childNodes);
+                        }
+                    } else if (node.nodeType === 1 && node.childNodes && !['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.tagName)) {
+                        for (let i = 0; i < node.childNodes.length; i++) {
+                            walk(node.childNodes[i]);
+                        }
+                    }
+                }
+                walk(document.body);
+            }
+        });
+    </script>
+</body>
+
+</html>

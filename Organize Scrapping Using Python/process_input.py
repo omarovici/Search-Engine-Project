@@ -1,7 +1,7 @@
-input_file = "input.txt"
+input_file = r"E:\Abdo ElDeeb\Simple projects\Search-Engine-Project\Organize Scrapping Using Python\inverted_index.txt"
 output_file = "output.csv"
 
-with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
+with open(input_file, 'r', encoding='utf-8') as infile, open(output_file, 'w', encoding='utf-8') as outfile:
     for line in infile:
         line = line.strip()
         if not line:
