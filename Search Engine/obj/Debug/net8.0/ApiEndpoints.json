@@ -1,0 +1,23 @@
+[
+  {
+    "ContainingType": "Search_Engine.Controllers.SearchEngineController",
+    "Method": "Get",
+    "RelativePath": "api/SearchEngine",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "word",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "orderBy",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
