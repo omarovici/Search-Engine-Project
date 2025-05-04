@@ -233,6 +233,14 @@ window.addEventListener('DOMContentLoaded', () => {
             <div class="circle circle4"></div>
         `);
     }
+    // Welcome overlay logic
+    const welcome = document.getElementById('welcome-overlay');
+    if (welcome) {
+        setTimeout(() => {
+            welcome.classList.add('hide');
+            setTimeout(() => welcome.style.display = 'none', 800);
+        }, 2200); // Show for 2.2 seconds
+    }
 });
 
 // Keyboard shortcuts

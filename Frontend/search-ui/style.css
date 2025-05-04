@@ -718,3 +718,91 @@ body.dark .close {
 .close:hover {
   color: #b00;
 }
+
+/* Welcome overlay */
+#welcome-overlay {
+  position: fixed;
+  z-index: 3000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(34, 40, 49, 0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.7s;
+  animation: welcomeFadeIn 1.2s;
+}
+.welcome-message {
+  text-align: center;
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  animation: popInWelcome 1.2s;
+}
+.welcome-title {
+  font-size: 2.5em;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+  display: block;
+  background: linear-gradient(90deg, #00adb5 0%, #ffe066 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.welcome-animation {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+.welcome-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00adb5 60%, #ffe066 100%);
+  animation: bounceCircle 1.2s infinite alternate;
+}
+.welcome-circle:nth-child(2) {
+  animation-delay: 0.3s;
+  background: linear-gradient(135deg, #2a5298 60%, #00adb5 100%);
+}
+.welcome-circle:nth-child(3) {
+  animation-delay: 0.6s;
+  background: linear-gradient(135deg, #ffe066 60%, #2a5298 100%);
+}
+@keyframes bounceCircle {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  60% {
+    transform: translateY(-24px) scale(1.15);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes popInWelcome {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes welcomeFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+#welcome-overlay.hide {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s;
+}

@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/Users/macbook/Documents/Search-Engine-Project/Search Engine/Search Engine.csproj": {}
+    "E:\\Abdo ElDeeb\\Simple projects\\Search-Engine-Project\\Search Engine\\Search Engine.csproj": {}
   },
   "projects": {
-    "/Users/macbook/Documents/Search-Engine-Project/Search Engine/Search Engine.csproj": {
+    "E:\\Abdo ElDeeb\\Simple projects\\Search-Engine-Project\\Search Engine\\Search Engine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/macbook/Documents/Search-Engine-Project/Search Engine/Search Engine.csproj",
+        "projectUniqueName": "E:\\Abdo ElDeeb\\Simple projects\\Search-Engine-Project\\Search Engine\\Search Engine.csproj",
         "projectName": "Search Engine",
-        "projectPath": "/Users/macbook/Documents/Search-Engine-Project/Search Engine/Search Engine.csproj",
-        "packagesPath": "/Users/macbook/.nuget/packages/",
-        "outputPath": "/Users/macbook/Documents/Search-Engine-Project/Search Engine/obj/",
+        "projectPath": "E:\\Abdo ElDeeb\\Simple projects\\Search-Engine-Project\\Search Engine\\Search Engine.csproj",
+        "packagesPath": "C:\\Users\\ar272\\.nuget\\packages\\",
+        "outputPath": "E:\\Abdo ElDeeb\\Simple projects\\Search-Engine-Project\\Search Engine\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/macbook/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\ar272\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -36,8 +42,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
-        }
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -81,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -509,3 +509,4 @@ E:\Abdo ElDeeb\Simple projects\Search-Engine-Project\Search Engine\obj\Debug\net
 E:\Abdo ElDeeb\Simple projects\Search-Engine-Project\Search Engine\obj\Debug\net8.0\Search Engine.pdb
 E:\Abdo ElDeeb\Simple projects\Search-Engine-Project\Search Engine\obj\Debug\net8.0\Search Engine.genruntimeconfig.cache
 E:\Abdo ElDeeb\Simple projects\Search-Engine-Project\Search Engine\obj\Debug\net8.0\ref\Search Engine.dll
+E:\Abdo ElDeeb\Simple projects\Search-Engine-Project\Search Engine\bin\Debug\net8.0\package-lock.json
