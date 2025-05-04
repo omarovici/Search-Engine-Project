@@ -32,7 +32,7 @@ Search-Engine-Project/
 ### Setup
 1. Clone the repository:
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/omarovici/Search-Engine-Project.git
     cd Search-Engine-Project
     ```
 2. Configure the database:
