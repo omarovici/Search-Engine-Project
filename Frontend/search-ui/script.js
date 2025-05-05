@@ -1,293 +1,466 @@
 // #region Highlighting Functions
 function highlightText(text, word) {
-    if (!word) return text;
-    // Escape regex special characters in word
-    const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(${escaped})`, 'gi');
-    return text.replace(regex, '<span class="highlight">$1</span>');
+  if (!word) return text;
+  // Escape regex special characters in word
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escaped})`, "gi");
+  return text.replace(regex, '<span class="highlight">$1</span>');
 }
 // #endregion
 
 // #region Spinner & Back To Top
 function showSpinner(show) {
-    document.getElementById('spinner').style.display = show ? 'block' : 'none';
+  document.getElementById("spinner").style.display = show ? "block" : "none";
 }
 
 function showBackToTop(show) {
-    document.getElementById('backToTop').style.display = show ? 'block' : 'none';
+  document.getElementById("backToTop").style.display = show ? "block" : "none";
 }
 
 function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-document.getElementById('backToTop').onclick = scrollToTop;
-window.addEventListener('scroll', function() {
-    showBackToTop(window.scrollY > 200);
+document.getElementById("backToTop").onclick = scrollToTop;
+window.addEventListener("scroll", function () {
+  showBackToTop(window.scrollY > 200);
 });
 // #endregion
 
 // #region Favicon & Domain Extraction
 function getFavicon(url) {
-    try {
-        const u = new URL(url, window.location.origin);
-        return u.origin + '/favicon.ico';
-    } catch {
-        return '';
-    }
+  try {
+    const u = new URL(url, window.location.origin);
+    return u.origin + "/favicon.ico";
+  } catch {
+    return "";
+  }
 }
 
 function extractDomain(url) {
-    try {
-        return new URL(url).hostname.replace('www.', '');
-    } catch {
-        return url;
-    }
+  try {
+    return new URL(url).hostname.replace("www.", "");
+  } catch {
+    return url;
+  }
 }
 // #endregion
 
 // #region Dark Mode
-const darkModeBtn = document.getElementById('darkModeToggle');
+const darkModeBtn = document.getElementById("darkModeToggle");
 function setDarkMode(on) {
-    document.body.classList.toggle('dark', on);
-    darkModeBtn.classList.toggle('active', on);
-    darkModeBtn.innerHTML = on ? '☀️ Light Mode' : '🌙 Dark Mode';
-    localStorage.setItem('darkMode', on ? '1' : '0');
+  document.body.classList.toggle("dark", on);
+  darkModeBtn.classList.toggle("active", on);
+  darkModeBtn.innerHTML = on ? "☀️ Light Mode" : "🌙 Dark Mode";
+  localStorage.setItem("darkMode", on ? "1" : "0");
 }
-darkModeBtn.onclick = () => setDarkMode(!document.body.classList.contains('dark'));
+darkModeBtn.onclick = () =>
+  setDarkMode(!document.body.classList.contains("dark"));
 // On load, restore dark mode
-if (localStorage.getItem('darkMode') === '1') setDarkMode(true);
+if (localStorage.getItem("darkMode") === "1") setDarkMode(true);
 // #endregion
 
 // #region Voice Search
-const micBtn = document.getElementById('micBtn');
-const micIcon = document.getElementById('micIcon');
-const searchInput = document.getElementById('searchInput');
+const micBtn = document.getElementById("micBtn");
+const micIcon = document.getElementById("micIcon");
+const searchInput = document.getElementById("searchInput");
 let recognition;
-if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-    micBtn.onclick = function() {
-        recognition.start();
-        micIcon.textContent = '🎙️';
-        micBtn.classList.add('recording');
-        micBtn.disabled = true;
-    };
-    recognition.onresult = function(event) {
-        let transcript = event.results[0][0].transcript;
-        transcript = transcript.replace(/[.\u06D4]+$/g, '').trim(); // Remove trailing dot(s) (English/Arabic)
-        searchInput.value = transcript;
-        micIcon.textContent = '🎤';
-        micBtn.classList.remove('recording');
-        micBtn.disabled = false;
-        // Optionally, auto-submit the form
-        document.getElementById('searchForm').requestSubmit();
-    };
-    recognition.onerror = function() {
-        micIcon.textContent = '🎤';
-        micBtn.classList.remove('recording');
-        micBtn.disabled = false;
-    };
-    recognition.onend = function() {
-        micIcon.textContent = '🎤';
-        micBtn.classList.remove('recording');
-        micBtn.disabled = false;
-    };
+if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  micBtn.onclick = function () {
+    recognition.start();
+    micIcon.textContent = "🎙️";
+    micBtn.classList.add("recording");
+    micBtn.disabled = true;
+  };
+  recognition.onresult = function (event) {
+    let transcript = event.results[0][0].transcript;
+    transcript = transcript.replace(/[.\u06D4]+$/g, "").trim(); // Remove trailing dot(s) (English/Arabic)
+    searchInput.value = transcript;
+    micIcon.textContent = "🎤";
+    micBtn.classList.remove("recording");
+    micBtn.disabled = false;
+    // Optionally, auto-submit the form
+    document.getElementById("searchForm").requestSubmit();
+  };
+  recognition.onerror = function () {
+    micIcon.textContent = "🎤";
+    micBtn.classList.remove("recording");
+    micBtn.disabled = false;
+  };
+  recognition.onend = function () {
+    micIcon.textContent = "🎤";
+    micBtn.classList.remove("recording");
+    micBtn.disabled = false;
+  };
 } else {
-    micBtn.style.display = 'none';
+  micBtn.style.display = "none";
 }
 // #endregion
 
 // #region Results Animation
 function showResultsWithAnimation(html) {
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.style.opacity = 0;
-    resultsDiv.innerHTML = html;
-    setTimeout(() => {
-        resultsDiv.style.transition = 'opacity 0.7s';
-        resultsDiv.style.opacity = 1;
-    }, 30);
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.style.opacity = 0;
+  resultsDiv.innerHTML = html;
+  setTimeout(() => {
+    resultsDiv.style.transition = "opacity 0.7s";
+    resultsDiv.style.opacity = 1;
+  }, 30);
 }
 // #endregion
 
 // #region Search Form Submission & Results
-document.getElementById('searchForm').addEventListener('submit', async function(e) {
+document
+  .getElementById("searchForm")
+  .addEventListener("submit", async function (e) {
     e.preventDefault();
-    const query = document.getElementById('searchInput').value.trim();
-    const orderBy = document.getElementById('orderBySelect').value;
+    const query = document.getElementById("searchInput").value.trim();
+    const orderBy = document.getElementById("orderBySelect").value;
     if (!query) return;
-    const resultsDiv = document.getElementById('results');
+    const resultsDiv = document.getElementById("results");
     showSpinner(true);
-    resultsDiv.innerHTML = '';
+    resultsDiv.innerHTML = "";
     const t0 = performance.now();
     try {
-        const response = await fetch(`http://localhost:5062/api/SearchEngine?word=${encodeURIComponent(query)}&orderBy=${encodeURIComponent(orderBy)}`);
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        const t1 = performance.now();
-        showSpinner(false);
-        if (!data || data.length === 0) {
-            showResultsWithAnimation(`<div style="text-align:center;margin-top:32px;">
+      const response = await fetch(
+        `http://localhost:5062/api/SearchEngine?word=${encodeURIComponent(
+          query
+        )}&orderBy=${encodeURIComponent(orderBy)}`
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      const t1 = performance.now();
+      showSpinner(false);
+      if (!data || data.length === 0) {
+        showResultsWithAnimation(`<div style="text-align:center;margin-top:32px;">
                 <img src='https://cdn-icons-png.flaticon.com/512/2748/2748558.png' alt='No results' width='80' style='opacity:0.7;'/><br>
                 <p style="color:#b00;font-size:1.1em;">No results found.<br>Try another search!</p>
             </div>`);
-            return;
-        }
-        const info = `<div style='color:#2a5298;font-size:1em;margin-bottom:10px;'>${data.length} results found in ${(t1-t0).toFixed(1)} ms</div>`;
-        // Show only first 5 results in preview
-        const previewCount = 5;
-        let shownCount = previewCount;
-        const renderPreview = () => data.slice(0, shownCount).map(item => {
+        return;
+      }
+      const info = `<div style='color:#2a5298;font-size:1em;margin-bottom:10px;'>${
+        data.length
+      } results found in ${(t1 - t0).toFixed(1)} ms</div>`;
+      // Show only first 5 results in preview
+      const previewCount = 5;
+      let shownCount = previewCount;
+      const renderPreview = () =>
+        data
+          .slice(0, shownCount)
+          .map((item) => {
             let url = item.Url || item.url;
-            if (url.endsWith('.html')) {
-                url += (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
+            if (url.endsWith(".html")) {
+              url +=
+                (url.includes("?") ? "&" : "?") +
+                "highlight=" +
+                encodeURIComponent(query);
             }
-            let favicon = '';
-            if (url.startsWith('http')) {
-                favicon = `<img class="result-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=32" alt="favicon"/>`;
-            } else if (url.endsWith('.html')) {
-                favicon = `<img class="result-favicon" src="${getFavicon(url)}" alt="favicon"/>`;
+            let favicon = "";
+            if (url.startsWith("http")) {
+              favicon = `<img class="result-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+                url
+              )}&sz=32" alt="favicon"/>`;
+            } else if (url.endsWith(".html")) {
+              favicon = `<img class="result-favicon" src="${getFavicon(
+                url
+              )}" alt="favicon"/>`;
             }
             const domain = extractDomain(url);
+            const urlTitleMap = {
+              "https://www.reuters.com/": "Reuters",
+              "https://www.nbcnews.com/": "NBC News",
+              "https://www.empireonline.com/": "Empire Online",
+              "https://www.nytimes.com/": "NY Times",
+              "https://www.nytimes.com/athletic/": "NY Times - The Athletic",
+              "https://www.bbc.com/": "BBC",
+              "https://www.bbc.com/sport": "BBC - Sports",
+              "https://cnn.com/": "CNN",
+              "https://www.goal.com/en-us": "Goal (US)",
+              "https://www.theguardian.com/": "The Guardian",
+              "https://www.theguardian.com/international":
+                "The Guardian - International",
+              "https://www.geeksforgeeks.org/": "GeeksforGeeks",
+              "https://www.skysports.com/": "Sky Sports",
+              "https://www.reuters.com/finance": "Reuters - Finance",
+              "https://www.nbcnews.com/politics": "NBC News - Politics",
+              "https://www.empireonline.com/movies": "Empire Online - Movies",
+              "https://www.bbc.com/news": "BBC - News",
+              "https://www.bbc.com/weather": "BBC - Weather",
+              "https://cnn.com/sport": "CNN - Sports",
+              "https://www.goal.com/en-us/news": "Goal (US) - News",
+              "https://www.theguardian.com/sport": "The Guardian - Sport",
+              "https://www.geeksforgeeks.org/data-structures":
+                "GeeksforGeeks - Data Structures",
+              "https://www.skysports.com/football": "Sky Sports - Football",
+              "https://www.nbcnews.com/us-news": "NBC News - US News",
+              "https://www.nbcnews.com/new-york": "NBC News - New York",
+              "https://www.nbcnews.com/los-angeles": "NBC News - Los Angeles",
+              "https://www.nbcnews.com/chicago": "NBC News - Chicago",
+              "https://www.nbcnews.com/dallas-fort-worth":
+                "NBC News - Dallas Fort Worth",
+              "https://www.nbcnews.com/philadelphia": "NBC News - Philadelphia",
+              "https://www.nbcnews.com/washington": "NBC News - Washington",
+              "https://www.nbcnews.com/boston": "NBC News - Boston",
+              "https://www.nbcnews.com/bay-area": "NBC News - Bay Area",
+              "https://www.nbcnews.com/miami": "NBC News - Miami",
+              "https://www.nbcnews.com/san-diego": "NBC News - San Diego",
+              "https://www.nbcnews.com/connecticut": "NBC News - Connecticut",
+              "https://www.nbcnews.com/world": "NBC News - World",
+              "https://www.nbcnews.com/business": "NBC News - Business",
+              "https://www.nbcnews.com/select": "NBC News - Select",
+              "https://www.nbcnews.com/tips/": "NBC News - Tips",
+              "https://www.teamtalk.com/": "TeamTalk",
+              "https://www.telemundo.com/": "Telemundo",
+              "https://www.football365.com/": "Football365",
+              "https://edition.cnn.com/": "CNN (International)",
+              "https://practice.geeksforgeeks.org/": "GFG Practice",
+              "https://holidays.theguardian.com/": "The Guardian Holidays",
+              "https://podcasts.apple.com/": "Apple Podcasts",
+              "https://store.moma.org/": "MoMA Store",
+              "https://holidays.theguardian.com/": "The Guardian Holidays",
+            };
+
+            const matchedTitle =
+              Object.keys(urlTitleMap)
+                .sort((a, b) => b.length - a.length) // Sort keys by length in descending order
+                .find((key) => url.includes(key)) || url;
+            const title = urlTitleMap[matchedTitle] || url;
+
             return `
                 <div class="result-card">
-                    <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-domain">${domain}</span><span class="result-url">${item.Url || item.url}</span></a>
-                    <div class="result-snippet">Count: ${item.Count ?? item.count}</div>
+                    <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
+                    <div class="result-snippet">Count: ${
+                      item.Count ?? item.count
+                    }</div>
                 </div>
             `;
-        }).join('');
-        let showMoreBtn = '';
-        if (data.length > shownCount) {
-            showMoreBtn = `<button class="show-more-btn" id="showMoreBtn">Show More</button>`;
-        }
-        showResultsWithAnimation(info + renderPreview() + showMoreBtn);
-        if (data.length > shownCount) {
-            document.getElementById('showMoreBtn').onclick = function() {
-                openModalWithPagination(data, query, previewCount);
-            };
-        }
-        // Modal close logic
-        document.getElementById('closeModal').onclick = closeModal;
-        document.getElementById('modalBackdrop').onclick = closeModal;
-        function closeModal() {
-            document.getElementById('resultsModal').style.display = 'none';
-            document.getElementById('modalBackdrop').style.display = 'none';
-        }
-        localStorage.setItem('lastSearch', query);
+          })
+          .join("");
+      let showMoreBtn = "";
+      if (data.length > shownCount) {
+        showMoreBtn = `<button class="show-more-btn" id="showMoreBtn">Show More</button>`;
+      }
+      showResultsWithAnimation(info + renderPreview() + showMoreBtn);
+      if (data.length > shownCount) {
+        document.getElementById("showMoreBtn").onclick = function () {
+          openModalWithPagination(data, query, previewCount);
+        };
+      }
+      // Modal close logic
+      document.getElementById("closeModal").onclick = closeModal;
+      document.getElementById("modalBackdrop").onclick = closeModal;
+      function closeModal() {
+        document.getElementById("resultsModal").style.display = "none";
+        document.getElementById("modalBackdrop").style.display = "none";
+      }
+      localStorage.setItem("lastSearch", query);
     } catch (err) {
-        showSpinner(false);
-        showResultsWithAnimation('<p style="color:#b00;">Error fetching results.</p>');
+      showSpinner(false);
+      showResultsWithAnimation(
+        '<p style="color:#b00;">Error fetching results.</p>'
+      );
     }
-});
+  });
 // #endregion
 
 // #region Modal Logic
 function openModalWithPagination(data, query, pageSize) {
-    const modal = document.getElementById('resultsModal');
-    const backdrop = document.getElementById('modalBackdrop');
-    const modalResults = document.getElementById('modalResults');
-    let shownCount = pageSize;
-    function renderModalResults() {
-        modalResults.innerHTML = data.slice(0, shownCount).map(item => {
-            let url = item.Url || item.url;
-            if (url.endsWith('.html')) {
-                url += (url.includes('?') ? '&' : '?') + 'highlight=' + encodeURIComponent(query);
-            }
-            let favicon = '';
-            if (url.startsWith('http')) {
-                favicon = `<img class="result-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(url)}&sz=32" alt="favicon"/>`;
-            } else if (url.endsWith('.html')) {
-                favicon = `<img class="result-favicon" src="${getFavicon(url)}" alt="favicon"/>`;
-            }
-            const domain = extractDomain(url);
-            return `
-                <div class="result-card">
-                    <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-domain">${domain}</span><span class="result-url">${item.Url || item.url}</span></a>
-                    <div class="result-snippet">Count: ${item.Count ?? item.count}</div>
-                </div>
-            `;
-        }).join('');
-    }
-    renderModalResults();
-    modal.style.display = 'block';
-    backdrop.style.display = 'block';
-    // Infinite scroll logic
-    modalResults.onscroll = function() {
-        if (modalResults.scrollTop + modalResults.clientHeight >= modalResults.scrollHeight - 10) {
-            if (shownCount < data.length) {
-                shownCount += pageSize;
-                renderModalResults();
-            }
+  const modal = document.getElementById("resultsModal");
+  const backdrop = document.getElementById("modalBackdrop");
+  const modalResults = document.getElementById("modalResults");
+  let shownCount = pageSize;
+  function renderModalResults() {
+    modalResults.innerHTML = data
+      .slice(0, shownCount)
+      .map((item) => {
+        let url = item.Url || item.url;
+        if (url.endsWith(".html")) {
+          url +=
+            (url.includes("?") ? "&" : "?") +
+            "highlight=" +
+            encodeURIComponent(query);
         }
-    };
+        let favicon = "";
+        if (url.startsWith("http")) {
+          favicon = `<img class="result-favicon" src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+            url
+          )}&sz=32" alt="favicon"/>`;
+        } else if (url.endsWith(".html")) {
+          favicon = `<img class="result-favicon" src="${getFavicon(
+            url
+          )}" alt="favicon"/>`;
+        }
+        const domain = extractDomain(url);
+
+        const urlTitleMap = {
+          "https://www.reuters.com/": "Reuters",
+          "https://www.nbcnews.com/": "NBC News",
+          "https://www.empireonline.com/": "Empire Online",
+          "https://www.nytimes.com/": "NY Times",
+          "https://www.nytimes.com/athletic/": "NY Times - The Athletic",
+          "https://www.bbc.com/": "BBC",
+          "https://www.bbc.com/sport": "BBC - Sports",
+          "https://cnn.com/": "CNN",
+          "https://www.goal.com/en-us": "Goal (US)",
+          "https://www.theguardian.com/": "The Guardian",
+          "https://www.theguardian.com/international":
+            "The Guardian - International",
+          "https://www.geeksforgeeks.org/": "GeeksforGeeks",
+          "https://www.skysports.com/": "Sky Sports",
+          "https://www.reuters.com/finance": "Reuters - Finance",
+          "https://www.nbcnews.com/politics": "NBC News - Politics",
+          "https://www.empireonline.com/movies": "Empire Online - Movies",
+          "https://www.bbc.com/news": "BBC - News",
+          "https://www.bbc.com/weather": "BBC - Weather",
+          "https://cnn.com/sport": "CNN - Sports",
+          "https://www.goal.com/en-us/news": "Goal (US) - News",
+          "https://www.theguardian.com/sport": "The Guardian - Sport",
+          "https://www.geeksforgeeks.org/data-structures":
+            "GeeksforGeeks - Data Structures",
+          "https://www.skysports.com/football": "Sky Sports - Football",
+          "https://www.nbcnews.com/us-news": "NBC News - US News",
+          "https://www.nbcnews.com/new-york": "NBC News - New York",
+          "https://www.nbcnews.com/los-angeles": "NBC News - Los Angeles",
+          "https://www.nbcnews.com/chicago": "NBC News - Chicago",
+          "https://www.nbcnews.com/dallas-fort-worth":
+            "NBC News - Dallas Fort Worth",
+          "https://www.nbcnews.com/philadelphia": "NBC News - Philadelphia",
+          "https://www.nbcnews.com/washington": "NBC News - Washington",
+          "https://www.nbcnews.com/boston": "NBC News - Boston",
+          "https://www.nbcnews.com/bay-area": "NBC News - Bay Area",
+          "https://www.nbcnews.com/miami": "NBC News - Miami",
+          "https://www.nbcnews.com/san-diego": "NBC News - San Diego",
+          "https://www.nbcnews.com/connecticut": "NBC News - Connecticut",
+          "https://www.nbcnews.com/world": "NBC News - World",
+          "https://www.nbcnews.com/business": "NBC News - Business",
+          "https://www.nbcnews.com/select": "NBC News - Select",
+          "https://www.nbcnews.com/tips/": "NBC News - Tips",
+          "https://www.teamtalk.com/": "TeamTalk",
+          "https://www.telemundo.com/": "Telemundo",
+          "https://www.football365.com/": "Football365",
+          "https://edition.cnn.com/": "CNN (International)",
+          "https://practice.geeksforgeeks.org/": "GFG Practice",
+          "https://holidays.theguardian.com/": "The Guardian Holidays",
+          "https://podcasts.apple.com/": "Apple Podcasts",
+          "https://store.moma.org/": "MoMA Store",
+          "https://holidays.theguardian.com/": "The Guardian Holidays",
+        };
+
+        const matchedTitle =
+          Object.keys(urlTitleMap)
+            .sort((a, b) => b.length - a.length) // Sort keys by length in descending order
+            .find((key) => url.includes(key)) || url;
+        const title = urlTitleMap[matchedTitle] || url;
+
+        return `
+            <div class="result-card">
+                <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
+                <div class="result-snippet">Count: ${
+                  item.Count ?? item.count
+                }</div>
+            </div>
+            `;
+      })
+      .join("");
+  }
+  renderModalResults();
+  modal.style.display = "block";
+  backdrop.style.display = "block";
+  // Infinite scroll logic
+  modalResults.onscroll = function () {
+    if (
+      modalResults.scrollTop + modalResults.clientHeight >=
+      modalResults.scrollHeight - 10
+    ) {
+      if (shownCount < data.length) {
+        shownCount += pageSize;
+        renderModalResults();
+      }
+    }
+  };
 }
 // #endregion
 
 // #region Highlight on Page Load & Welcome Overlay
-window.addEventListener('DOMContentLoaded', () => {
-    const params = new URLSearchParams(window.location.search);
-    const highlight = params.get('highlight');
-    if (highlight) {
-        function walk(node) {
-            if (node.nodeType === 3) {
-                const replaced = highlightText(node.nodeValue, highlight);
-                if (replaced !== node.nodeValue) {
-                    const span = document.createElement('span');
-                    span.innerHTML = replaced;
-                    node.replaceWith(...span.childNodes);
-                }
-            } else if (node.nodeType === 1 && node.childNodes && !['SCRIPT','STYLE','NOSCRIPT'].includes(node.tagName)) {
-                for (let i = 0; i < node.childNodes.length; i++) {
-                    walk(node.childNodes[i]);
-                }
-            }
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const highlight = params.get("highlight");
+  if (highlight) {
+    function walk(node) {
+      if (node.nodeType === 3) {
+        const replaced = highlightText(node.nodeValue, highlight);
+        if (replaced !== node.nodeValue) {
+          const span = document.createElement("span");
+          span.innerHTML = replaced;
+          node.replaceWith(...span.childNodes);
         }
-        walk(document.body);
+      } else if (
+        node.nodeType === 1 &&
+        node.childNodes &&
+        !["SCRIPT", "STYLE", "NOSCRIPT"].includes(node.tagName)
+      ) {
+        for (let i = 0; i < node.childNodes.length; i++) {
+          walk(node.childNodes[i]);
+        }
+      }
     }
-    // Restore last search
-    const last = localStorage.getItem('lastSearch');
-    if (last) {
-        document.getElementById('searchInput').value = last;
-    }
-    // Animated circles for About section
-    const about = document.getElementById('about-section');
-    if (about && !about.querySelector('.circle')) {
-        about.insertAdjacentHTML('beforeend', `
+    walk(document.body);
+  }
+  // Restore last search
+  const last = localStorage.getItem("lastSearch");
+  if (last) {
+    document.getElementById("searchInput").value = last;
+  }
+  // Animated circles for About section
+  const about = document.getElementById("about-section");
+  if (about && !about.querySelector(".circle")) {
+    about.insertAdjacentHTML(
+      "beforeend",
+      `
             <div class="circle circle1"></div>
             <div class="circle circle2"></div>
             <div class="circle circle3"></div>
             <div class="circle circle4"></div>
-        `);
-    }
-    // Welcome overlay logic
-    const welcome = document.getElementById('welcome-overlay');
-    if (welcome) {
-        setTimeout(() => {
-            welcome.classList.add('hide');
-            setTimeout(() => welcome.style.display = 'none', 800);
-        }, 2200); // Show for 2.2 seconds
-    }
+        `
+    );
+  }
+  // Welcome overlay logic
+  const welcome = document.getElementById("welcome-overlay");
+  if (welcome) {
+    setTimeout(() => {
+      welcome.classList.add("hide");
+      setTimeout(() => (welcome.style.display = "none"), 800);
+    }, 2200); // Show for 2.2 seconds
+  }
 });
 // #endregion
 
 // #region Keyboard Shortcuts
-window.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('results').innerHTML = '';
-    }
-    if (e.key === '/' && document.activeElement !== document.getElementById('searchInput')) {
-        e.preventDefault();
-        document.getElementById('searchInput').focus();
-    }
+window.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("results").innerHTML = "";
+  }
+  if (
+    e.key === "/" &&
+    document.activeElement !== document.getElementById("searchInput")
+  ) {
+    e.preventDefault();
+    document.getElementById("searchInput").focus();
+  }
 });
 // #endregion
 
 // #region Modal HTML Injection
-document.body.insertAdjacentHTML('beforeend', `
+document.body.insertAdjacentHTML(
+  "beforeend",
+  `
     <div id="resultsModal" class="modal">
         <div class="modal-content">
             <span id="closeModal" class="close">&times;</span>
@@ -295,5 +468,6 @@ document.body.insertAdjacentHTML('beforeend', `
         </div>
     </div>
     <div id="modalBackdrop" class="modal-backdrop"></div>
-`);
+`
+);
 // #endregion
