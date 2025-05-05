@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- #region Head & Meta -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Engine</title>
     <link rel="stylesheet" href="style.css">
 </head>
+<!-- #endregion -->
 
 <body>
+    <!-- #region Welcome Overlay -->
     <div id="welcome-overlay">
         <div class="welcome-message">
             <span class="welcome-title">Welcome To Our Search Engine!</span>
@@ -19,7 +23,13 @@
             </div>
         </div>
     </div>
+    <!-- #endregion -->
+
+    <!-- #region Dark Mode Toggle -->
     <button id="darkModeToggle">🌙 Dark Mode</button>
+    <!-- #endregion -->
+
+    <!-- #region Main Container & Search Form -->
     <div class="container">
         <div id="bigDataBadge">BigData Project</div>
         <h1>Search Engine</h1>
@@ -48,7 +58,13 @@
         <div id="spinner"></div>
         <div id="results"></div>
     </div>
+    <!-- #endregion -->
+
+    <!-- #region Back To Top Button -->
     <button id="backToTop" title="Back to Top">↑</button>
+    <!-- #endregion -->
+
+    <!-- #region About Section -->
     <section id="about-section">
         <h2>About the Project</h2>
         <p class="about-text">
@@ -58,9 +74,15 @@
             results and showcases the power of data engineering, backend, and frontend collaboration.
         </p>
     </section>
+    <!-- #endregion -->
+
+    <!-- #region Footer -->
     <footer>
         &copy; 2025 Faculty of Computer Science and Artificial Intelligence, Fayoum University
     </footer>
+    <!-- #endregion -->
+
+    <!-- #region Team Section -->
     <section id="team-section">
         <h2>Meet Our Team</h2>
         <div class="team-grid">
@@ -86,6 +108,9 @@
             </a>
         </div>
     </section>
+    <!-- #endregion -->
+
+    <!-- #region Modal Results -->
     <div id="resultsModal" class="modal">
         <div class="modal-content">
             <span class="close" id="closeModal">&times;</span>
@@ -94,31 +119,11 @@
         </div>
     </div>
     <div id="modalBackdrop" class="modal-backdrop"></div>
+    <!-- #endregion -->
+
+    <!-- #region Script -->
     <script src="script.js"></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', function () {
-            const params = new URLSearchParams(window.location.search);
-            const highlight = params.get('highlight');
-            if (highlight) {
-                function walk(node) {
-                    if (node.nodeType === 3) {
-                        const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
-                        const replaced = node.nodeValue.replace(regex, '<span style="background:#ffe066;color:#222;border-radius:3px;padding:0 2px;">$1</span>');
-                        if (replaced !== node.nodeValue) {
-                            const span = document.createElement('span');
-                            span.innerHTML = replaced;
-                            node.replaceWith(...span.childNodes);
-                        }
-                    } else if (node.nodeType === 1 && node.childNodes && !['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.tagName)) {
-                        for (let i = 0; i < node.childNodes.length; i++) {
-                            walk(node.childNodes[i]);
-                        }
-                    }
-                }
-                walk(document.body);
-            }
-        });
-    </script>
+    <!-- #endregion -->
 </body>
 
 </html>

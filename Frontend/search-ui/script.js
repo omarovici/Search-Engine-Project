@@ -1,3 +1,4 @@
+// #region Highlighting Functions
 function highlightText(text, word) {
     if (!word) return text;
     // Escape regex special characters in word
@@ -5,7 +6,9 @@ function highlightText(text, word) {
     const regex = new RegExp(`(${escaped})`, 'gi');
     return text.replace(regex, '<span class="highlight">$1</span>');
 }
+// #endregion
 
+// #region Spinner & Back To Top
 function showSpinner(show) {
     document.getElementById('spinner').style.display = show ? 'block' : 'none';
 }
@@ -22,7 +25,9 @@ document.getElementById('backToTop').onclick = scrollToTop;
 window.addEventListener('scroll', function() {
     showBackToTop(window.scrollY > 200);
 });
+// #endregion
 
+// #region Favicon & Domain Extraction
 function getFavicon(url) {
     try {
         const u = new URL(url, window.location.origin);
@@ -39,8 +44,9 @@ function extractDomain(url) {
         return url;
     }
 }
+// #endregion
 
-// Dark mode logic
+// #region Dark Mode
 const darkModeBtn = document.getElementById('darkModeToggle');
 function setDarkMode(on) {
     document.body.classList.toggle('dark', on);
@@ -51,8 +57,9 @@ function setDarkMode(on) {
 darkModeBtn.onclick = () => setDarkMode(!document.body.classList.contains('dark'));
 // On load, restore dark mode
 if (localStorage.getItem('darkMode') === '1') setDarkMode(true);
+// #endregion
 
-// Voice search logic
+// #region Voice Search
 const micBtn = document.getElementById('micBtn');
 const micIcon = document.getElementById('micIcon');
 const searchInput = document.getElementById('searchInput');
@@ -92,8 +99,9 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 } else {
     micBtn.style.display = 'none';
 }
+// #endregion
 
-// Add fade-in animation to results
+// #region Results Animation
 function showResultsWithAnimation(html) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.style.opacity = 0;
@@ -103,7 +111,9 @@ function showResultsWithAnimation(html) {
         resultsDiv.style.opacity = 1;
     }, 30);
 }
+// #endregion
 
+// #region Search Form Submission & Results
 document.getElementById('searchForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const query = document.getElementById('searchInput').value.trim();
@@ -172,7 +182,9 @@ document.getElementById('searchForm').addEventListener('submit', async function(
         showResultsWithAnimation('<p style="color:#b00;">Error fetching results.</p>');
     }
 });
+// #endregion
 
+// #region Modal Logic
 function openModalWithPagination(data, query, pageSize) {
     const modal = document.getElementById('resultsModal');
     const backdrop = document.getElementById('modalBackdrop');
@@ -212,7 +224,9 @@ function openModalWithPagination(data, query, pageSize) {
         }
     };
 }
+// #endregion
 
+// #region Highlight on Page Load & Welcome Overlay
 window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const highlight = params.get('highlight');
@@ -257,8 +271,9 @@ window.addEventListener('DOMContentLoaded', () => {
         }, 2200); // Show for 2.2 seconds
     }
 });
+// #endregion
 
-// Keyboard shortcuts
+// #region Keyboard Shortcuts
 window.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         document.getElementById('searchInput').value = '';
@@ -269,8 +284,9 @@ window.addEventListener('keydown', function(e) {
         document.getElementById('searchInput').focus();
     }
 });
+// #endregion
 
-// Modal HTML
+// #region Modal HTML Injection
 document.body.insertAdjacentHTML('beforeend', `
     <div id="resultsModal" class="modal">
         <div class="modal-content">
@@ -280,3 +296,4 @@ document.body.insertAdjacentHTML('beforeend', `
     </div>
     <div id="modalBackdrop" class="modal-backdrop"></div>
 `);
+// #endregion

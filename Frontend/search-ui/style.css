@@ -1,3 +1,4 @@
+/* #region Base Styles */
 body {
   margin: 0;
   padding: 0;
@@ -13,7 +14,9 @@ body.dark {
     no-repeat center center fixed;
   background-size: cover;
 }
+/* #endregion */
 
+/* #region Container & Layout */
 .container {
   background: rgba(255, 255, 255, 0.82);
   max-width: 600px;
@@ -42,7 +45,9 @@ body.dark .container {
     transform: translateY(0);
   }
 }
+/* #endregion */
 
+/* #region Typography & Headings */
 h1 {
   color: #2a5298;
   margin-bottom: 24px;
@@ -54,7 +59,9 @@ body.dark .result-title,
 body.dark footer {
   color: #00adb5;
 }
+/* #endregion */
 
+/* #region Search Form & Input */
 #searchForm {
   display: flex;
   flex-direction: column;
@@ -186,7 +193,9 @@ body.dark #orderBySelect {
   color: #00adb5;
   border: 1px solid #00adb5;
 }
+/* #endregion */
 
+/* #region Spinner & Results */
 #spinner {
   display: none;
   margin: 18px auto;
@@ -218,7 +227,9 @@ body.dark #spinner {
   opacity: 1;
   transition: opacity 0.7s;
 }
+/* #endregion */
 
+/* #region Result Card & Highlight */
 .result-card {
   background: rgba(44, 62, 80, 0.92);
   border-radius: 12px;
@@ -312,7 +323,9 @@ body.dark .highlight {
   background: #00adb5;
   color: #232931;
 }
+/* #endregion */
 
+/* #region Back To Top Button */
 #backToTop {
   display: none;
   position: fixed;
@@ -345,7 +358,9 @@ body.dark #backToTop:hover {
   background: #1e3c72;
   transform: scale(1.08);
 }
+/* #endregion */
 
+/* #region Footer */
 footer {
   margin-top: 40px;
   text-align: center;
@@ -353,7 +368,9 @@ footer {
   font-size: 1em;
   opacity: 0.8;
 }
+/* #endregion */
 
+/* #region Dark Mode */
 #darkModeToggle {
   position: absolute;
   top: 24px;
@@ -379,28 +396,9 @@ body.dark #darkModeToggle {
 #darkModeToggle:focus {
   outline: 2px solid #00adb5;
 }
+/* #endregion */
 
-.result-favicon {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  margin-right: 8px;
-  border-radius: 3px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  animation: popIn 0.5s;
-}
-
-@keyframes popIn {
-  from {
-    transform: scale(0.7);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
+/* #region BigData Badge */
 #bigDataBadge {
   display: inline-block;
   background: linear-gradient(90deg, #00adb5 0%, #2a5298 100%);
@@ -428,8 +426,9 @@ body.dark #darkModeToggle {
     transform: scale(1);
   }
 }
+/* #endregion */
 
-/* Team section */
+/* #region Team Section */
 #team-section {
   margin: 48px auto 0 auto;
   max-width: 900px;
@@ -546,8 +545,9 @@ body.dark .team-member p {
     font-size: 1em;
   }
 }
+/* #endregion */
 
-/* About section */
+/* #region About Section */
 #about-section {
   margin: 48px auto 0 auto;
   max-width: 700px;
@@ -671,7 +671,9 @@ body.dark .about-text {
   background: linear-gradient(90deg, #2a5298 0%, #1e3c72 100%);
   transform: scale(1.04);
 }
+/* #endregion */
 
+/* #region Modal Styles */
 .modal {
   display: none;
   position: fixed;
@@ -749,8 +751,9 @@ body.dark .close {
 .close:hover {
   color: #b00;
 }
+/* #endregion */
 
-/* Welcome overlay */
+/* #region Welcome Overlay */
 #welcome-overlay {
   position: fixed;
   z-index: 3000;
@@ -837,3 +840,4 @@ body.dark .close {
   pointer-events: none;
   transition: opacity 0.7s;
 }
+/* #endregion */
