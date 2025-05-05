@@ -5,7 +5,6 @@ A comprehensive web-based search engine solution built with ASP.NET Core (.NET 8
 ---
 
 ## Table of Contents
-- [Project Structure & Folder Overview](#project-structure--folder-overview)
 - [Folder & File Explanations](#folder--file-explanations)
 - [How to Clone and Run the Full Project](#how-to-clone-and-run-the-full-project)
 - [API Usage & Examples](#api-usage--examples)
@@ -15,7 +14,6 @@ A comprehensive web-based search engine solution built with ASP.NET Core (.NET 8
 - [Technologies Used](#technologies-used)
 - [Security & Performance Notes](#security--performance-notes)
 - [Future Improvements & Roadmap](#future-improvements--roadmap)
-- [License](#license)
 
 ---
 
