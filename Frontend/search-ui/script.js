@@ -66,6 +66,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     micBtn.onclick = function() {
         recognition.start();
         micIcon.textContent = '🎙️';
+        micBtn.classList.add('recording');
         micBtn.disabled = true;
     };
     recognition.onresult = function(event) {
@@ -73,20 +74,34 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         transcript = transcript.replace(/[.\u06D4]+$/g, '').trim(); // Remove trailing dot(s) (English/Arabic)
         searchInput.value = transcript;
         micIcon.textContent = '🎤';
+        micBtn.classList.remove('recording');
         micBtn.disabled = false;
         // Optionally, auto-submit the form
         document.getElementById('searchForm').requestSubmit();
     };
     recognition.onerror = function() {
         micIcon.textContent = '🎤';
+        micBtn.classList.remove('recording');
         micBtn.disabled = false;
     };
     recognition.onend = function() {
         micIcon.textContent = '🎤';
+        micBtn.classList.remove('recording');
         micBtn.disabled = false;
     };
 } else {
     micBtn.style.display = 'none';
+}
+
+// Add fade-in animation to results
+function showResultsWithAnimation(html) {
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.style.opacity = 0;
+    resultsDiv.innerHTML = html;
+    setTimeout(() => {
+        resultsDiv.style.transition = 'opacity 0.7s';
+        resultsDiv.style.opacity = 1;
+    }, 30);
 }
 
 document.getElementById('searchForm').addEventListener('submit', async function(e) {
@@ -105,10 +120,10 @@ document.getElementById('searchForm').addEventListener('submit', async function(
         const t1 = performance.now();
         showSpinner(false);
         if (!data || data.length === 0) {
-            resultsDiv.innerHTML = `<div style="text-align:center;margin-top:32px;">
+            showResultsWithAnimation(`<div style="text-align:center;margin-top:32px;">
                 <img src='https://cdn-icons-png.flaticon.com/512/2748/2748558.png' alt='No results' width='80' style='opacity:0.7;'/><br>
                 <p style="color:#b00;font-size:1.1em;">No results found.<br>Try another search!</p>
-            </div>`;
+            </div>`);
             return;
         }
         const info = `<div style='color:#2a5298;font-size:1em;margin-bottom:10px;'>${data.length} results found in ${(t1-t0).toFixed(1)} ms</div>`;
@@ -138,7 +153,7 @@ document.getElementById('searchForm').addEventListener('submit', async function(
         if (data.length > shownCount) {
             showMoreBtn = `<button class="show-more-btn" id="showMoreBtn">Show More</button>`;
         }
-        resultsDiv.innerHTML = info + renderPreview() + showMoreBtn;
+        showResultsWithAnimation(info + renderPreview() + showMoreBtn);
         if (data.length > shownCount) {
             document.getElementById('showMoreBtn').onclick = function() {
                 openModalWithPagination(data, query, previewCount);
@@ -154,7 +169,7 @@ document.getElementById('searchForm').addEventListener('submit', async function(
         localStorage.setItem('lastSearch', query);
     } catch (err) {
         showSpinner(false);
-        resultsDiv.innerHTML = '<p style="color:#b00;">Error fetching results.</p>';
+        showResultsWithAnimation('<p style="color:#b00;">Error fetching results.</p>');
     }
 });
 
