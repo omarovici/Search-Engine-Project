@@ -47,28 +47,35 @@ function extractDomain(url) {
 // #endregion
 
 // #region Dark Mode
-const darkModeBtn = document.getElementById("darkModeToggle");
+const darkModeToggle = document.getElementById('darkModeToggle');
 function setDarkMode(on) {
-  document.body.classList.add("theme-transition", "theme-fade");
-  setTimeout(() => {
-    document.body.classList.toggle("dark", on);
-    darkModeBtn.classList.toggle("active", on);
-    darkModeBtn.innerHTML = on ? "☀️ Light Mode" : "🌙 Dark Mode";
-    localStorage.setItem("darkMode", on ? "1" : "0");
+  document.body.classList.add('theme-transition', 'theme-fade');
+  requestAnimationFrame(() => {
     setTimeout(() => {
-      document.body.classList.remove("theme-transition", "theme-fade");
-    }, 600);
-  }, 10);
+      document.body.classList.toggle('dark', on);
+      darkModeToggle.classList.toggle('active', on);
+      localStorage.setItem('darkMode', on ? '1' : '0');
+      setTimeout(() => {
+        document.body.classList.remove('theme-transition', 'theme-fade');
+      }, 600);
+    }, 10);
+  });
 }
-darkModeBtn.onclick = () =>
-  setDarkMode(!document.body.classList.contains("dark"));
+darkModeToggle.onclick = () => setDarkMode(!document.body.classList.contains('dark'));
+darkModeToggle.onkeydown = (e) => {
+  if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    setDarkMode(!document.body.classList.contains('dark'));
+  }
+};
 // On load, restore dark mode
-if (localStorage.getItem("darkMode") === "1") setDarkMode(true);
+if (localStorage.getItem('darkMode') === '1') setDarkMode(true);
 // #endregion
 
 // #region Voice Search
 const micBtn = document.getElementById("micBtn");
 const micIcon = document.getElementById("micIcon");
+const micIconImg = document.getElementById("micIconImg");
 const searchInput = document.getElementById("searchInput");
 let recognition;
 if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
@@ -80,7 +87,7 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
   recognition.maxAlternatives = 1;
   micBtn.onclick = function () {
     recognition.start();
-    micIcon.textContent = "🎙️";
+    if (micIconImg) micIconImg.src = "assets/microphone.png";
     micBtn.classList.add("recording");
     micBtn.disabled = true;
   };
@@ -88,19 +95,19 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
     let transcript = event.results[0][0].transcript;
     transcript = transcript.replace(/[.\u06D4]+$/g, "").trim(); // Remove trailing dot(s) (English/Arabic)
     searchInput.value = transcript;
-    micIcon.textContent = "🎤";
+    if (micIconImg) micIconImg.src = "assets/mic.png";
     micBtn.classList.remove("recording");
     micBtn.disabled = false;
     // Optionally, auto-submit the form
     document.getElementById("searchForm").requestSubmit();
   };
   recognition.onerror = function () {
-    micIcon.textContent = "🎤";
+    if (micIconImg) micIconImg.src = "assets/mic.png";
     micBtn.classList.remove("recording");
     micBtn.disabled = false;
   };
   recognition.onend = function () {
-    micIcon.textContent = "🎤";
+    if (micIconImg) micIconImg.src = "assets/mic.png";
     micBtn.classList.remove("recording");
     micBtn.disabled = false;
   };
@@ -135,7 +142,7 @@ document
       showSpinner(false);
       resultsDiv.innerHTML = `
         <div class="special-image-container">
-          <img src="download.jpeg" class="special-animated-image" alt="Special" />
+          <img src="assets/download.jpeg" class="special-animated-image" alt="Special" />
           <div class="special-sentence">Peace and understanding bring light to the world.</div>
         </div>
       `;
@@ -151,7 +158,12 @@ document
         )}&orderBy=${encodeURIComponent(orderBy)}`
       );
       if (!response.ok) throw new Error("Network response was not ok");
-      const data = await response.json();
+      let data = await response.json();
+      // Filter out results containing 'https://go.redirectingat.com/'
+      data = data.filter(item => {
+        const url = item.Url || item.url || '';
+        return !url.includes('https://go.redirectingat.com/');
+      });
       const t1 = performance.now();
       showSpinner(false);
       if (!data || data.length === 0) {
@@ -376,6 +388,8 @@ function openModalWithPagination(data, query, pageSize) {
           "http://www.football365.com/": "Football365",
           "http://www.nbcsports.com/": "NBC Sports",
           "https://news.sky.com/": "Sky News",
+          "https://apnews.com/": "Associated Press",
+          "https://www.nbc.com/": "NBC",
         };
 
         const matchedTitle =
