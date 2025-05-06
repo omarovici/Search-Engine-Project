@@ -47,29 +47,30 @@ function extractDomain(url) {
 // #endregion
 
 // #region Dark Mode
-const darkModeToggle = document.getElementById('darkModeToggle');
+const darkModeToggle = document.getElementById("darkModeToggle");
 function setDarkMode(on) {
-  document.body.classList.add('theme-transition', 'theme-fade');
+  document.body.classList.add("theme-transition", "theme-fade");
   requestAnimationFrame(() => {
     setTimeout(() => {
-      document.body.classList.toggle('dark', on);
-      darkModeToggle.classList.toggle('active', on);
-      localStorage.setItem('darkMode', on ? '1' : '0');
+      document.body.classList.toggle("dark", on);
+      darkModeToggle.classList.toggle("active", on);
+      localStorage.setItem("darkMode", on ? "1" : "0");
       setTimeout(() => {
-        document.body.classList.remove('theme-transition', 'theme-fade');
+        document.body.classList.remove("theme-transition", "theme-fade");
       }, 600);
     }, 10);
   });
 }
-darkModeToggle.onclick = () => setDarkMode(!document.body.classList.contains('dark'));
+darkModeToggle.onclick = () =>
+  setDarkMode(!document.body.classList.contains("dark"));
 darkModeToggle.onkeydown = (e) => {
-  if (e.key === ' ' || e.key === 'Enter') {
+  if (e.key === " " || e.key === "Enter") {
     e.preventDefault();
-    setDarkMode(!document.body.classList.contains('dark'));
+    setDarkMode(!document.body.classList.contains("dark"));
   }
 };
 // On load, restore dark mode
-if (localStorage.getItem('darkMode') === '1') setDarkMode(true);
+if (localStorage.getItem("darkMode") === "1") setDarkMode(true);
 // #endregion
 
 // #region Voice Search
@@ -160,9 +161,9 @@ document
       if (!response.ok) throw new Error("Network response was not ok");
       let data = await response.json();
       // Filter out results containing 'https://go.redirectingat.com/'
-      data = data.filter(item => {
-        const url = item.Url || item.url || '';
-        return !url.includes('https://go.redirectingat.com/');
+      data = data.filter((item) => {
+        const url = item.Url || item.url || "";
+        return !url.includes("https://go.redirectingat.com/");
       });
       const t1 = performance.now();
       showSpinner(false);
@@ -258,6 +259,9 @@ document
               "http://www.nbcsports.com/": "NBC Sports",
               "https://news.sky.com/": "Sky News",
               "https://apnews.com/": "Associated Press",
+              "https://www.nbc.com/": "NBC",
+              "https://www.theatlantic.com/": "The Atlantic",
+              "https://www.nbcnews.com/": "NBC News",
             };
 
             const matchedTitle =
@@ -390,6 +394,8 @@ function openModalWithPagination(data, query, pageSize) {
           "https://news.sky.com/": "Sky News",
           "https://apnews.com/": "Associated Press",
           "https://www.nbc.com/": "NBC",
+          "https://www.theatlantic.com/": "The Atlantic",
+          "https://www.nbcnews.com/": "NBC News",
         };
 
         const matchedTitle =
@@ -497,6 +503,19 @@ window.addEventListener("DOMContentLoaded", () => {
       cursor.style.opacity = cursor.style.opacity === "0" ? "1" : "0";
     }, 500);
   }
+  // Dynamic Footer Animation
+  const footerText = document.getElementById("footerText");
+  const year = new Date().getFullYear();
+  const messageFooter = ` ${year} Faculty of Computer Science and Artificial Intelligence, Fayoum University. All rights reserved.`;
+  let j = 0;
+  function typeFooter() {
+    if (footerText && j <= messageFooter.length) {
+      footerText.textContent = messageFooter.slice(0, j);
+      j++;
+      setTimeout(typeFooter, 32);
+    }
+  }
+  if (footerText) typeFooter();
 });
 // #endregion
 
