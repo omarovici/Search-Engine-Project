@@ -15,7 +15,8 @@
     <!-- #region Welcome Overlay -->
     <div id="welcome-overlay">
         <div class="welcome-message">
-            <span class="welcome-title">Welcome To Our Search Engine!</span>
+            <span class="welcome-title"><span id="typewriter-text"></span><span
+                    class="typewriter-cursor">|</span></span>
             <div class="welcome-animation">
                 <div class="welcome-circle"></div>
                 <div class="welcome-circle"></div>
@@ -49,7 +50,14 @@
             </div>
             <div class="search-form-row">
                 <button type="submit">Search</button>
-                <select id="orderBySelect">
+                <div class="custom-dropdown" id="orderByDropdown">
+                    <div class="dropdown-selected" tabindex="0">Count</div>
+                    <div class="dropdown-list">
+                        <div class="dropdown-option selected" data-value="count">Count</div>
+                        <div class="dropdown-option" data-value="pagerank">PageRank</div>
+                    </div>
+                </div>
+                <select id="orderBySelect" style="display:none">
                     <option value="pagerank">PageRank</option>
                     <option value="count" selected>Count</option>
                 </select>
@@ -89,7 +97,7 @@
             <a class="team-member" href="https://www.linkedin.com/in/abd-el-rahman-eldeeb" target="_blank">
                 <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Abd El-Rahman Eldeeb">
                 <h3>Abd El-Rahman Eldeeb</h3>
-                <p>Web Scraper</p>
+                <p>Frontend Developer</p>
             </a>
             <a class="team-member" href="https://www.linkedin.com/in/omarovici" target="_blank">
                 <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Omar Khalid">
@@ -99,12 +107,12 @@
             <a class="team-member" href="https://www.linkedin.com/in/shehab-yasser-9458602a4" target="_blank">
                 <img src="https://randomuser.me/api/portraits/men/77.jpg" alt="Shehab Yasser">
                 <h3>Shehab Yasser</h3>
-                <p>Python Developer</p>
+                <p>Web Scraper</p>
             </a>
             <a class="team-member" href="https://www.linkedin.com/in/haneen-hassan-2b4bb9329" target="_blank">
                 <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Haneen Hassan">
                 <h3>Haneen Hassan</h3>
-                <p>Frontend Developer</p>
+                <p>Python Developer</p>
             </a>
         </div>
     </section>

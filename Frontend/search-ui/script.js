@@ -49,10 +49,16 @@ function extractDomain(url) {
 // #region Dark Mode
 const darkModeBtn = document.getElementById("darkModeToggle");
 function setDarkMode(on) {
-  document.body.classList.toggle("dark", on);
-  darkModeBtn.classList.toggle("active", on);
-  darkModeBtn.innerHTML = on ? "☀️ Light Mode" : "🌙 Dark Mode";
-  localStorage.setItem("darkMode", on ? "1" : "0");
+  document.body.classList.add("theme-transition", "theme-fade");
+  setTimeout(() => {
+    document.body.classList.toggle("dark", on);
+    darkModeBtn.classList.toggle("active", on);
+    darkModeBtn.innerHTML = on ? "☀️ Light Mode" : "🌙 Dark Mode";
+    localStorage.setItem("darkMode", on ? "1" : "0");
+    setTimeout(() => {
+      document.body.classList.remove("theme-transition", "theme-fade");
+    }, 600);
+  }, 10);
 }
 darkModeBtn.onclick = () =>
   setDarkMode(!document.body.classList.contains("dark"));
@@ -124,6 +130,17 @@ document
     const orderBy = document.getElementById("orderBySelect").value;
     if (!query) return;
     const resultsDiv = document.getElementById("results");
+    // Special case for 'israel'
+    if (query.toLowerCase() === "israel") {
+      showSpinner(false);
+      resultsDiv.innerHTML = `
+        <div class="special-image-container">
+          <img src="download.jpeg" class="special-animated-image" alt="Special" />
+          <div class="special-sentence">Peace and understanding bring light to the world.</div>
+        </div>
+      `;
+      return;
+    }
     showSpinner(true);
     resultsDiv.innerHTML = "";
     const t0 = performance.now();
@@ -224,6 +241,11 @@ document
               "https://podcasts.apple.com/": "Apple Podcasts",
               "https://store.moma.org/": "MoMA Store",
               "https://holidays.theguardian.com/": "The Guardian Holidays",
+              "https://www.football365.com/": "Football365",
+              "http://www.football365.com/": "Football365",
+              "http://www.nbcsports.com/": "NBC Sports",
+              "https://news.sky.com/": "Sky News",
+              "https://apnews.com/": "Associated Press",
             };
 
             const matchedTitle =
@@ -350,6 +372,10 @@ function openModalWithPagination(data, query, pageSize) {
           "https://podcasts.apple.com/": "Apple Podcasts",
           "https://store.moma.org/": "MoMA Store",
           "https://holidays.theguardian.com/": "The Guardian Holidays",
+          "https://www.football365.com/": "Football365",
+          "http://www.football365.com/": "Football365",
+          "http://www.nbcsports.com/": "NBC Sports",
+          "https://news.sky.com/": "Sky News",
         };
 
         const matchedTitle =
@@ -438,6 +464,25 @@ window.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => (welcome.style.display = "none"), 800);
     }, 2200); // Show for 2.2 seconds
   }
+  // Typewriter animation for welcome message
+  const typewriterText = document.getElementById("typewriter-text");
+  const cursor = document.querySelector(".typewriter-cursor");
+  const message = "Welcome To Our Search Engine!";
+  let i = 0;
+  function typeWriter() {
+    if (i <= message.length) {
+      typewriterText.textContent = message.slice(0, i);
+      i++;
+      setTimeout(typeWriter, 55);
+    }
+  }
+  if (typewriterText) typeWriter();
+  // Blinking cursor
+  if (cursor) {
+    setInterval(() => {
+      cursor.style.opacity = cursor.style.opacity === "0" ? "1" : "0";
+    }, 500);
+  }
 });
 // #endregion
 
@@ -470,4 +515,64 @@ document.body.insertAdjacentHTML(
     <div id="modalBackdrop" class="modal-backdrop"></div>
 `
 );
+// #endregion
+
+// #region Custom Dropdown Logic
+(function () {
+  const dropdown = document.getElementById("orderByDropdown");
+  const selected = dropdown.querySelector(".dropdown-selected");
+  const list = dropdown.querySelector(".dropdown-list");
+  const options = dropdown.querySelectorAll(".dropdown-option");
+  const hiddenSelect = document.getElementById("orderBySelect");
+
+  function closeDropdown() {
+    dropdown.classList.remove("open");
+  }
+  function openDropdown() {
+    dropdown.classList.add("open");
+    selected.focus();
+  }
+  selected.addEventListener("click", function (e) {
+    dropdown.classList.toggle("open");
+  });
+  selected.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      dropdown.classList.toggle("open");
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      options[0].focus();
+    } else if (e.key === "Escape") {
+      closeDropdown();
+    }
+  });
+  options.forEach((opt, idx) => {
+    opt.setAttribute("tabindex", "0");
+    opt.addEventListener("click", function () {
+      options.forEach((o) => o.classList.remove("selected"));
+      opt.classList.add("selected");
+      selected.textContent = opt.textContent;
+      hiddenSelect.value = opt.getAttribute("data-value");
+      closeDropdown();
+    });
+    opt.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        opt.click();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (idx < options.length - 1) options[idx + 1].focus();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (idx > 0) options[idx - 1].focus();
+        else selected.focus();
+      } else if (e.key === "Escape") {
+        closeDropdown();
+        selected.focus();
+      }
+    });
+  });
+  document.addEventListener("click", function (e) {
+    if (!dropdown.contains(e.target)) closeDropdown();
+  });
+})();
 // #endregion
