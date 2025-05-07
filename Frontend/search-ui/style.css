@@ -1044,12 +1044,12 @@ body.dark .about-text {
 }
 .modal-content {
   background: #fff;
-  margin: 60px auto;
-  padding: 32px 24px 24px 24px;
-  border-radius: 16px;
-  max-width: 520px;
-  max-height: 80vh;
-  box-shadow: 0 8px 32px rgba(42, 82, 152, 0.18);
+  margin: 40px auto;
+  padding: 40px 30px 30px 30px;
+  border-radius: 20px;
+  max-width: 650px;
+  max-height: 90vh;
+  box-shadow: 0 12px 48px rgba(42, 82, 152, 0.22);
   position: relative;
   overflow-y: auto;
   animation: fadeInModal 0.4s;

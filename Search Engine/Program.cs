@@ -18,10 +18,10 @@ builder.Services.AddScoped<ISearchEngineRepository, SearchEngineRepository>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+	options.AddPolicy("AllowAll", policy =>
+		policy.AllowAnyOrigin()
+			.AllowAnyHeader()
+			.AllowAnyMethod());
 });
 
 var app = builder.Build();
@@ -29,9 +29,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseCors("AllowAll"); // Enable CORS in development
+	app.UseSwagger();
+	app.UseSwaggerUI();
+	app.UseCors("AllowAll");
 }
 
 app.UseHttpsRedirection();

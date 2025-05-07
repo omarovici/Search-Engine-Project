@@ -17,23 +17,35 @@ namespace Search_Engine.Controllers
         [HttpGet]
         public IActionResult Get(string word, string orderBy)
         {
-            var wordInfos = _repository.GetWordInfosByWord(word);
-            if (wordInfos == null || !wordInfos.Any())
-                return NotFound();
+            if (string.IsNullOrWhiteSpace(word))
+                return BadRequest("No search word provided.");
 
-            var result = wordInfos
-                .Select(w => new {
-                    Url = w.UrlInfo?.URL,
-                    Count = w.Count,
-                    PageRank = w.PageRank
-                });
+            var words = word.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var combinedResults = new List<dynamic>();
 
-            if (orderBy.ToLower() == "pagerank")
-                result = result.OrderByDescending(x => x.PageRank);
-            else if (orderBy.ToLower() == "count")
-                result = result.OrderByDescending(x => x.Count);
+            foreach (var w in words)
+            {
+                var wordInfos = _repository.GetWordInfosByWord(w);
+                if (wordInfos == null || !wordInfos.Any())
+                    continue;
 
-            return Ok(result.ToList());
+                var result = wordInfos
+                    .Select(info => new {
+                        Url = info.UrlInfo?.URL,
+                        Count = info.Count,
+                        PageRank = info.PageRank,
+                        Word = info.Word
+                    });
+
+                combinedResults.AddRange(result);
+            }
+
+            if (!string.IsNullOrEmpty(orderBy) && orderBy.ToLower() == "pagerank")
+                combinedResults = combinedResults.OrderByDescending(x => x.PageRank).ToList();
+            else if (!string.IsNullOrEmpty(orderBy) && orderBy.ToLower() == "count")
+                combinedResults = combinedResults.OrderByDescending(x => x.Count).ToList();
+
+            return Ok(combinedResults);
         }
     }
 }

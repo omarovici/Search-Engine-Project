@@ -48,12 +48,17 @@ function extractDomain(url) {
 
 // #region Dark Mode
 const darkModeToggle = document.getElementById("darkModeToggle");
+const darkModeIcon = document.getElementById("darkModeIcon");
 function setDarkMode(on) {
   document.body.classList.add("theme-transition", "theme-fade");
   requestAnimationFrame(() => {
     setTimeout(() => {
       document.body.classList.toggle("dark", on);
       darkModeToggle.classList.toggle("active", on);
+      if (darkModeIcon) {
+        darkModeIcon.src = on ? "assets/moon.svg" : "assets/sun.svg";
+        darkModeIcon.alt = on ? "Dark mode" : "Light mode";
+      }
       localStorage.setItem("darkMode", on ? "1" : "0");
       setTimeout(() => {
         document.body.classList.remove("theme-transition", "theme-fade");
@@ -263,19 +268,16 @@ document
               "https://www.theatlantic.com/": "The Atlantic",
               "https://www.nbcnews.com/": "NBC News",
             };
-
+            
             const matchedTitle =
               Object.keys(urlTitleMap)
-                .sort((a, b) => b.length - a.length) // Sort keys by length in descending order
+                .sort((a, b) => b.length - a.length)
                 .find((key) => url.includes(key)) || url;
             const title = urlTitleMap[matchedTitle] || url;
-
             return `
                 <div class="result-card">
                     <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
-                    <div class="result-snippet">Count: ${
-                      item.Count ?? item.count
-                    }</div>
+                    <div class="result-snippet">Count: ${item.Count ?? item.count} &nbsp; Word: ${(item.Word ?? item.word).charAt(0).toUpperCase() + (item.Word ?? item.word).slice(1).toLowerCase()}</div>
                 </div>
             `;
           })
@@ -312,7 +314,7 @@ function openModalWithPagination(data, query, pageSize) {
   const modal = document.getElementById("resultsModal");
   const backdrop = document.getElementById("modalBackdrop");
   const modalResults = document.getElementById("modalResults");
-  let shownCount = pageSize;
+  let shownCount = data.length;
   function renderModalResults() {
     modalResults.innerHTML = data
       .slice(0, shownCount)
@@ -335,7 +337,6 @@ function openModalWithPagination(data, query, pageSize) {
           )}" alt="favicon"/>`;
         }
         const domain = extractDomain(url);
-
         const urlTitleMap = {
           "https://www.reuters.com/": "Reuters",
           "https://www.nbcnews.com/": "NBC News",
@@ -407,9 +408,7 @@ function openModalWithPagination(data, query, pageSize) {
         return `
             <div class="result-card">
                 <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
-                <div class="result-snippet">Count: ${
-                  item.Count ?? item.count
-                }</div>
+                <div class="result-snippet">Count: ${item.Count ?? item.count} &nbsp; Word: ${(item.Word ?? item.word).charAt(0).toUpperCase() + (item.Word ?? item.word).slice(1).toLowerCase()}</div>
             </div>
             `;
       })
@@ -418,18 +417,8 @@ function openModalWithPagination(data, query, pageSize) {
   renderModalResults();
   modal.style.display = "block";
   backdrop.style.display = "block";
-  // Infinite scroll logic
-  modalResults.onscroll = function () {
-    if (
-      modalResults.scrollTop + modalResults.clientHeight >=
-      modalResults.scrollHeight - 10
-    ) {
-      if (shownCount < data.length) {
-        shownCount += pageSize;
-        renderModalResults();
-      }
-    }
-  };
+  // Infinite scroll logic removed since all results are shown
+  modalResults.onscroll = null;
 }
 // #endregion
 
