@@ -711,8 +711,9 @@ body.dark #team-section h2 {
   width: 180px;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s,
     border 0.35s;
-  animation: teamFadeIn 0.8s both;
+  animation: teamFadeInUp 0.8s both;
   opacity: 0;
+  text-decoration: none;
   position: relative;
 }
 .team-member:nth-child(1) {
@@ -728,7 +729,7 @@ body.dark #team-section h2 {
   animation-delay: 0.55s;
 }
 
-@keyframes teamFadeIn {
+@keyframes teamFadeInUp {
   0% {
     opacity: 0;
     transform: translateY(40px) scale(0.95);
@@ -1044,12 +1045,12 @@ body.dark .about-text {
 }
 .modal-content {
   background: #fff;
-  margin: 40px auto;
-  padding: 40px 30px 30px 30px;
-  border-radius: 20px;
-  max-width: 650px;
-  max-height: 90vh;
-  box-shadow: 0 12px 48px rgba(42, 82, 152, 0.22);
+  margin: 60px auto;
+  padding: 32px 24px 24px 24px;
+  border-radius: 16px;
+  max-width: 520px;
+  max-height: 80vh;
+  box-shadow: 0 8px 32px rgba(42, 82, 152, 0.18);
   position: relative;
   overflow-y: auto;
   animation: fadeInModal 0.4s;
@@ -1107,41 +1108,6 @@ body.dark .close {
 }
 .close:hover {
   color: #b00;
-}
-
-/* Animation for new result cards */
-@keyframes fadeInSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.result-card.animated {
-  animation: fadeInSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Modal loading spinner */
-#modalLoadingSpinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 18px 0 12px 0;
-}
-#modalLoadingSpinner .spinner {
-  border: 4px solid #e3e9f2;
-  border-top: 4px solid #00adb5;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  animation: spin 1s linear infinite;
-}
-body.dark #modalLoadingSpinner .spinner {
-  border: 4px solid #393e46;
-  border-top: 4px solid #ffe066;
 }
 /* #endregion */
 
@@ -1566,98 +1532,3 @@ body.dark .switch-icon.moon {
   transform: scale(0.93);
 }
 /* #endregion */
-
-/* #region Custom Scrollbar */
-/* Webkit Browsers */
-body,
-.modal-content,
-.modal-results-list {
-  scrollbar-width: thin;
-  scrollbar-color: #00adb5 #e3e9f2;
-}
-body.dark,
-body.dark .modal-content,
-body.dark .modal-results-list {
-  scrollbar-color: #ffe066 #232931;
-}
-body::-webkit-scrollbar,
-.modal-content::-webkit-scrollbar,
-.modal-results-list::-webkit-scrollbar {
-  width: 12px;
-  background: #e3e9f2;
-  transition: background 0.4s;
-}
-body.dark::-webkit-scrollbar,
-body.dark .modal-content::-webkit-scrollbar,
-body.dark .modal-results-list::-webkit-scrollbar {
-  background: #232931;
-}
-body::-webkit-scrollbar-thumb,
-.modal-content::-webkit-scrollbar-thumb,
-.modal-results-list::-webkit-scrollbar-thumb {
-  background: linear-gradient(120deg, #00adb5 0%, #2a5298 100%);
-  border-radius: 8px;
-  border: 3px solid #e3e9f2;
-  transition: background 0.4s, border 0.4s;
-}
-body.dark::-webkit-scrollbar-thumb,
-body.dark .modal-content::-webkit-scrollbar-thumb,
-body.dark .modal-results-list::-webkit-scrollbar-thumb {
-  background: linear-gradient(120deg, #ffe066 0%, #00adb5 100%);
-  border: 3px solid #232931;
-}
-body::-webkit-scrollbar-thumb:hover,
-.modal-content::-webkit-scrollbar-thumb:hover,
-.modal-results-list::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(120deg, #2a5298 0%, #00adb5 100%);
-}
-body.dark::-webkit-scrollbar-thumb:hover,
-body.dark .modal-content::-webkit-scrollbar-thumb:hover,
-body.dark .modal-results-list::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(120deg, #00adb5 0%, #ffe066 100%);
-}
-body::-webkit-scrollbar-corner,
-.modal-content::-webkit-scrollbar-corner,
-.modal-results-list::-webkit-scrollbar-corner {
-  background: transparent;
-}
-@media (max-width: 700px) {
-  body::-webkit-scrollbar,
-  .modal-content::-webkit-scrollbar,
-  .modal-results-list::-webkit-scrollbar {
-    width: 8px;
-  }
-}
-/* #endregion */
-
-/* Dynamic animated gradient title */
-.dynamic-title {
-  background: linear-gradient(90deg, #00adb5, #ffe066, #2a5298, #00adb5);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-  animation: gradientShimmer 3.5s linear infinite,
-    titleFloat 2.2s ease-in-out infinite alternate;
-  font-weight: 800;
-  letter-spacing: 2px;
-  display: block;
-  text-align: center;
-}
-@keyframes gradientShimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-@keyframes titleFloat {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    transform: translateY(-8px) scale(1.04);
-  }
-}

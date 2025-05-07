@@ -48,18 +48,17 @@ function extractDomain(url) {
 
 // #region Dark Mode
 const darkModeToggle = document.getElementById("darkModeToggle");
-const darkModeIcon = document.getElementById("darkModeIcon");
+const sunSVG = '<img src="assets/sun.svg" alt="Light Mode" class="mode-icon" style="vertical-align:middle;width:1.2em;height:1.2em;">';
+const moonSVG = '<img src="assets/moon.svg" alt="Dark Mode" class="mode-icon" style="vertical-align:middle;width:1.2em;height:1.2em;">';
 function setDarkMode(on) {
   document.body.classList.add("theme-transition", "theme-fade");
   requestAnimationFrame(() => {
     setTimeout(() => {
       document.body.classList.toggle("dark", on);
       darkModeToggle.classList.toggle("active", on);
-      if (darkModeIcon) {
-        darkModeIcon.src = on ? "assets/moon.svg" : "assets/sun.svg";
-        darkModeIcon.alt = on ? "Dark mode" : "Light mode";
-      }
       localStorage.setItem("darkMode", on ? "1" : "0");
+      // Update button icon and text
+      darkModeToggle.innerHTML = on ? sunSVG + ' Light Mode' : moonSVG + ' Dark Mode';
       setTimeout(() => {
         document.body.classList.remove("theme-transition", "theme-fade");
       }, 600);
@@ -76,6 +75,7 @@ darkModeToggle.onkeydown = (e) => {
 };
 // On load, restore dark mode
 if (localStorage.getItem("darkMode") === "1") setDarkMode(true);
+else darkModeToggle.innerHTML = moonSVG + ' Dark Mode';
 // #endregion
 
 // #region Voice Search
@@ -271,9 +271,10 @@ document
 
             const matchedTitle =
               Object.keys(urlTitleMap)
-                .sort((a, b) => b.length - a.length)
+                .sort((a, b) => b.length - a.length) // Sort keys by length in descending order
                 .find((key) => url.includes(key)) || url;
             const title = urlTitleMap[matchedTitle] || url;
+
             return `
                 <div class="result-card">
                     <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
@@ -291,7 +292,7 @@ document
       showResultsWithAnimation(info + renderPreview() + showMoreBtn);
       if (data.length > shownCount) {
         document.getElementById("showMoreBtn").onclick = function () {
-          openModalWithPagination(data, query, previewCount);
+          openModalWithPagination(data, query, data.length); // Show all results in modal
         };
       }
       // Modal close logic
@@ -316,13 +317,11 @@ function openModalWithPagination(data, query, pageSize) {
   const modal = document.getElementById("resultsModal");
   const backdrop = document.getElementById("modalBackdrop");
   const modalResults = document.getElementById("modalResults");
-  let shownCount = pageSize || 5;
-  let isLoading = false;
-  function renderModalResults(animateFromIndex) {
-    // Render all currently shown results
+  let shownCount = pageSize;
+  function renderModalResults() {
     modalResults.innerHTML = data
       .slice(0, shownCount)
-      .map((item, idx) => {
+      .map((item) => {
         let url = item.Url || item.url;
         if (url.endsWith(".html")) {
           url +=
@@ -341,6 +340,7 @@ function openModalWithPagination(data, query, pageSize) {
           )}" alt="favicon"/>`;
         }
         const domain = extractDomain(url);
+
         const urlTitleMap = {
           "https://www.reuters.com/": "Reuters",
           "https://www.nbcnews.com/": "NBC News",
@@ -409,13 +409,8 @@ function openModalWithPagination(data, query, pageSize) {
             .find((key) => url.includes(key)) || url;
         const title = urlTitleMap[matchedTitle] || url;
 
-        // Animate only the new results
-        const animatedClass =
-          animateFromIndex !== undefined && idx >= animateFromIndex
-            ? "animated"
-            : "";
         return `
-            <div class="result-card ${animatedClass}">
+            <div class="result-card">
                 <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
                 <div class="result-snippet">Count: ${
                   item.Count ?? item.count
@@ -424,38 +419,19 @@ function openModalWithPagination(data, query, pageSize) {
             `;
       })
       .join("");
-    // Show loading spinner if loading
-    if (isLoading) {
-      modalResults.innerHTML += `<div id="modalLoadingSpinner"><div class="spinner"></div></div>`;
-    } else if (shownCount < data.length) {
-      modalResults.innerHTML += `<div style="text-align:center;padding:12px 0;color:#00adb5;">Scroll down to load more...</div>`;
-    }
   }
   renderModalResults();
   modal.style.display = "block";
   backdrop.style.display = "block";
   // Infinite scroll logic
-  modalResults.onscroll = async function () {
+  modalResults.onscroll = function () {
     if (
-      !isLoading &&
       modalResults.scrollTop + modalResults.clientHeight >=
-        modalResults.scrollHeight - 10 &&
-      shownCount < data.length
+      modalResults.scrollHeight - 10
     ) {
-      isLoading = true;
-      renderModalResults();
-      // Simulate loading delay
-      await new Promise((res) => setTimeout(res, 600));
-      const prevCount = shownCount;
-      shownCount = Math.min(shownCount + 5, data.length);
-      isLoading = false;
-      renderModalResults(prevCount);
-      // Scroll to the first new result for smoothness
-      if (prevCount < shownCount) {
-        const newCard =
-          modalResults.querySelectorAll(".result-card")[prevCount];
-        if (newCard)
-          newCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (shownCount < data.length) {
+        shownCount = data.length; // Show all results when scrolled to bottom
+        renderModalResults();
       }
     }
   };

@@ -10,7 +10,7 @@ PAGERANK_PATH = os.path.join(JSONS_DIR, 'pageRankResults.json')
 OUTPUT_PATH = os.path.join(JSONS_DIR, 'inverted_index.txt')
 
 def load_url_map():
-    with open(URL_MAP_PATH, 'r', encoding='utf-8') as f:    
+    with open(URL_MAP_PATH, 'r', encoding='utf-8') as f: 
         return json.load(f)
 
 def load_pagerank():

@@ -21,7 +21,7 @@ namespace Search_Engine.Controllers
             if (string.IsNullOrWhiteSpace(word))
                 return BadRequest("No search word provided.");
 
-            var words = word.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var words = word.Split(' ', StringSplitOptions.RemoveEmptyEntries); 
             if (words.Length == 0)
                 return BadRequest("No valid search words provided.");
 
@@ -43,7 +43,7 @@ namespace Search_Engine.Controllers
             }
 
             var wordInfosList = words.Select(w => _repository.GetWordInfosByWord(w)?.ToList() ?? new List<WordInfo>()).ToList();
-
+// [ EGYPT SA ABC ] // [ URL1 URL2 .. ]
             var commonUrls = wordInfosList
                 .Select(list => list.Select(info => info.UrlInfo?.URL).Where(url => url != null).ToHashSet())
                 .Aggregate((set1, set2) => { set1.IntersectWith(set2); return set1; });
