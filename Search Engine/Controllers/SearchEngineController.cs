@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Search_Engine.Models;
 using Search_Engine.Repositories;
 using System.Linq;
 
@@ -21,23 +22,47 @@ namespace Search_Engine.Controllers
                 return BadRequest("No search word provided.");
 
             var words = word.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var combinedResults = new List<dynamic>();
+            if (words.Length == 0)
+                return BadRequest("No valid search words provided.");
 
-            foreach (var w in words)
+            if (words.Length == 1)
             {
-                var wordInfos = _repository.GetWordInfosByWord(w);
-                if (wordInfos == null || !wordInfos.Any())
-                    continue;
+                var wordInfos = _repository.GetWordInfosByWord(words[0])?.ToList() ?? new List<WordInfo>();
+                var results = wordInfos.Select(info => new {
+                    Url = info.UrlInfo?.URL,
+                    Count = info.Count,
+                    PageRank = info.PageRank
+                }).ToList();
 
-                var result = wordInfos
-                    .Select(info => new {
-                        Url = info.UrlInfo?.URL,
-                        Count = info.Count,
-                        PageRank = info.PageRank,
-                        Word = info.Word
-                    });
+                if (!string.IsNullOrEmpty(orderBy) && orderBy.ToLower() == "pagerank")
+                    results = results.OrderByDescending(x => x.PageRank).ToList();
+                else if (!string.IsNullOrEmpty(orderBy) && orderBy.ToLower() == "count")
+                    results = results.OrderByDescending(x => x.Count).ToList();
 
-                combinedResults.AddRange(result);
+                return Ok(results);
+            }
+
+            var wordInfosList = words.Select(w => _repository.GetWordInfosByWord(w)?.ToList() ?? new List<WordInfo>()).ToList();
+
+            var commonUrls = wordInfosList
+                .Select(list => list.Select(info => info.UrlInfo?.URL).Where(url => url != null).ToHashSet())
+                .Aggregate((set1, set2) => { set1.IntersectWith(set2); return set1; });
+
+            var combinedResults = new List<dynamic>();
+            foreach (var url in commonUrls)
+            {
+                int totalCount = 0;
+                double? pageRank = null;
+                foreach (var wordInfos in wordInfosList)
+                {
+                    var info = wordInfos.FirstOrDefault(i => i.UrlInfo?.URL == url);
+                    if (info != null)
+                    {
+                        totalCount += info.Count;
+                        pageRank = info.PageRank;
+                    }
+                }
+                combinedResults.Add(new { Url = url, Count = totalCount, PageRank = pageRank });
             }
 
             if (!string.IsNullOrEmpty(orderBy) && orderBy.ToLower() == "pagerank")

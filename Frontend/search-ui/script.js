@@ -279,10 +279,7 @@ document
                     <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
                     <div class="result-snippet">Count: ${
                       item.Count ?? item.count
-                    } &nbsp; Word: ${
-              (item.Word ?? item.word).charAt(0).toUpperCase() +
-              (item.Word ?? item.word).slice(1).toLowerCase()
-            }</div>
+                    }</div>
                 </div>
             `;
           })
@@ -422,10 +419,7 @@ function openModalWithPagination(data, query, pageSize) {
                 <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
                 <div class="result-snippet">Count: ${
                   item.Count ?? item.count
-                } &nbsp; Word: ${
-          (item.Word ?? item.word).charAt(0).toUpperCase() +
-          (item.Word ?? item.word).slice(1).toLowerCase()
-        }</div>
+                }</div>
             </div>
             `;
       })
