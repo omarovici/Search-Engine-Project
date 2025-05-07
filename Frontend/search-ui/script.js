@@ -268,7 +268,7 @@ document
               "https://www.theatlantic.com/": "The Atlantic",
               "https://www.nbcnews.com/": "NBC News",
             };
-            
+
             const matchedTitle =
               Object.keys(urlTitleMap)
                 .sort((a, b) => b.length - a.length)
@@ -277,7 +277,12 @@ document
             return `
                 <div class="result-card">
                     <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
-                    <div class="result-snippet">Count: ${item.Count ?? item.count} &nbsp; Word: ${(item.Word ?? item.word).charAt(0).toUpperCase() + (item.Word ?? item.word).slice(1).toLowerCase()}</div>
+                    <div class="result-snippet">Count: ${
+                      item.Count ?? item.count
+                    } &nbsp; Word: ${
+              (item.Word ?? item.word).charAt(0).toUpperCase() +
+              (item.Word ?? item.word).slice(1).toLowerCase()
+            }</div>
                 </div>
             `;
           })
@@ -314,11 +319,13 @@ function openModalWithPagination(data, query, pageSize) {
   const modal = document.getElementById("resultsModal");
   const backdrop = document.getElementById("modalBackdrop");
   const modalResults = document.getElementById("modalResults");
-  let shownCount = data.length;
-  function renderModalResults() {
+  let shownCount = pageSize || 5;
+  let isLoading = false;
+  function renderModalResults(animateFromIndex) {
+    // Render all currently shown results
     modalResults.innerHTML = data
       .slice(0, shownCount)
-      .map((item) => {
+      .map((item, idx) => {
         let url = item.Url || item.url;
         if (url.endsWith(".html")) {
           url +=
@@ -405,20 +412,59 @@ function openModalWithPagination(data, query, pageSize) {
             .find((key) => url.includes(key)) || url;
         const title = urlTitleMap[matchedTitle] || url;
 
+        // Animate only the new results
+        const animatedClass =
+          animateFromIndex !== undefined && idx >= animateFromIndex
+            ? "animated"
+            : "";
         return `
-            <div class="result-card">
+            <div class="result-card ${animatedClass}">
                 <a href="${url}" class="result-title" target="_blank">${favicon}<span class="result-url">${title}</span></a>
-                <div class="result-snippet">Count: ${item.Count ?? item.count} &nbsp; Word: ${(item.Word ?? item.word).charAt(0).toUpperCase() + (item.Word ?? item.word).slice(1).toLowerCase()}</div>
+                <div class="result-snippet">Count: ${
+                  item.Count ?? item.count
+                } &nbsp; Word: ${
+          (item.Word ?? item.word).charAt(0).toUpperCase() +
+          (item.Word ?? item.word).slice(1).toLowerCase()
+        }</div>
             </div>
             `;
       })
       .join("");
+    // Show loading spinner if loading
+    if (isLoading) {
+      modalResults.innerHTML += `<div id="modalLoadingSpinner"><div class="spinner"></div></div>`;
+    } else if (shownCount < data.length) {
+      modalResults.innerHTML += `<div style="text-align:center;padding:12px 0;color:#00adb5;">Scroll down to load more...</div>`;
+    }
   }
   renderModalResults();
   modal.style.display = "block";
   backdrop.style.display = "block";
-  // Infinite scroll logic removed since all results are shown
-  modalResults.onscroll = null;
+  // Infinite scroll logic
+  modalResults.onscroll = async function () {
+    if (
+      !isLoading &&
+      modalResults.scrollTop + modalResults.clientHeight >=
+        modalResults.scrollHeight - 10 &&
+      shownCount < data.length
+    ) {
+      isLoading = true;
+      renderModalResults();
+      // Simulate loading delay
+      await new Promise((res) => setTimeout(res, 600));
+      const prevCount = shownCount;
+      shownCount = Math.min(shownCount + 5, data.length);
+      isLoading = false;
+      renderModalResults(prevCount);
+      // Scroll to the first new result for smoothness
+      if (prevCount < shownCount) {
+        const newCard =
+          modalResults.querySelectorAll(".result-card")[prevCount];
+        if (newCard)
+          newCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
 }
 // #endregion
 
