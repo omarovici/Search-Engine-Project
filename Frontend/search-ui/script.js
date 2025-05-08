@@ -179,9 +179,9 @@ document
             </div>`);
         return;
       }
-      const info = `<div style='color:#2a5298;font-size:1em;margin-bottom:10px;'>${
-        data.length
-      } results found in ${(t1 - t0).toFixed(1)} ms</div>`;
+      // const info = `<div style='color:#2a5298;font-size:1em;margin-bottom:10px;'>${
+      //   data.length
+      // } results found in ${(t1 - t0).toFixed(1)} ms</div>`;
       // Show only first 5 results in preview
       const previewCount = 5;
       let shownCount = previewCount;
@@ -289,7 +289,7 @@ document
       if (data.length > shownCount) {
         showMoreBtn = `<button class="show-more-btn" id="showMoreBtn">Show More</button>`;
       }
-      showResultsWithAnimation(info + renderPreview() + showMoreBtn);
+      showResultsWithAnimation(renderPreview() + showMoreBtn);
       if (data.length > shownCount) {
         document.getElementById("showMoreBtn").onclick = function () {
           openModalWithPagination(data, query, data.length); // Show all results in modal
