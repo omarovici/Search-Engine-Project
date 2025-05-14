@@ -26,6 +26,54 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Automatically apply migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+
+    if (!db.UrlInfos.Any() && !db.WordInfos.Any())
+    {
+        var urlInfoPath = Environment.GetEnvironmentVariable("/Users/macbook/Desktop/UrlInfos.csv");
+        var wordInfoPath = Environment.GetEnvironmentVariable("/Users/macbook/Desktop/WordInfos.csv");
+        if (!string.IsNullOrEmpty(urlInfoPath) && File.Exists(urlInfoPath))
+        {
+            var urlLines = File.ReadAllLines(urlInfoPath);
+            foreach (var line in urlLines)
+            {
+                var parts = line.Split(',');
+                if (parts.Length >= 2)
+                {
+                    db.UrlInfos.Add(new UrlInfo
+                    {
+                        URL_Num = int.Parse(parts[0].Trim()),
+                        URL = parts[1].Trim()
+                    });
+                }
+            }
+        }
+        if (!string.IsNullOrEmpty(wordInfoPath) && File.Exists(wordInfoPath))
+        {
+            var wordLines = File.ReadAllLines(wordInfoPath);
+            foreach (var line in wordLines)
+            {
+                var parts = line.Split(',');
+                if (parts.Length >= 4)
+                {
+                    db.WordInfos.Add(new WordInfo
+                    {
+                        Word = parts[0].Trim(),
+                        URL_Num = int.Parse(parts[1].Trim()),
+                        Count = int.Parse(parts[2].Trim()),
+                        PageRank = double.Parse(parts[3].Trim(), System.Globalization.CultureInfo.InvariantCulture)
+                    });
+                }
+            }
+        }
+        db.SaveChanges();
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

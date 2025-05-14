@@ -59,10 +59,36 @@ A comprehensive web-based search engine solution built with ASP.NET Core (.NET 8
 - Python 3.x (for engine scripts)
 - SQL Server (or compatible connection string)
 
-### 1. Clone the Repository
+### How to Run with Docker & Docker Compose
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
+
+### Build and Run
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repo-url>
+   cd Search-Engine-Project
+   ```
+2. **Build and start services:**
+   ```bash
+   docker compose up --build
+   ```
+   This will build the backend image and start both the backend and SQL Server containers.
+
+3. **Access the backend API:**
+   - Swagger UI: [http://localhost:5062/swagger](http://localhost:5062/swagger)
+
+### DockerHub Image
+- The backend image is available at: `https://hub.docker.com/r/<your-dockerhub-username>/search-engine-backend`
+
+### Environment Variables
+- Database credentials and connection strings are managed via environment variables in `docker-compose.yml`.
+
+### Stopping Services
 ```bash
-git clone <your-repo-url>
-cd Search-Engine-Project
+docker compose down
 ```
 
 ### 2. Prepare the Data (Python Engine)

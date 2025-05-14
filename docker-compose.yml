@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MyStrongPass123
+    ports:
+      - "14330:1433"
+    volumes:
+      - db_data:/var/opt/mssql
+    networks:
+      - searchnet
+  backend:
+    build:
+      context: ./Search Engine
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db,1433;Database=SearchEngineDatabase;User Id=SA;Password=MyStrongPass123;TrustServerCertificate=True;
+    ports:
+      - "5062:5062"
+    depends_on:
+      - db
+    networks:
+      - searchnet
+volumes:
+  db_data:
+networks:
+  searchnet:
+    driver: bridge
