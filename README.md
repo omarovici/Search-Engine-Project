@@ -68,7 +68,7 @@ A comprehensive web-based search engine solution built with ASP.NET Core (.NET 8
 
 1. **Clone the repository:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/omarovici/Search-Engine-Project.git
    cd Search-Engine-Project
    ```
 2. **Build and start services:**
@@ -81,7 +81,7 @@ A comprehensive web-based search engine solution built with ASP.NET Core (.NET 8
    - Swagger UI: [http://localhost:5062/swagger](http://localhost:5062/swagger)
 
 ### DockerHub Image
-- The backend image is available at: `https://hub.docker.com/r/<your-dockerhub-username>/search-engine-backend`
+- The backend image is available at: [https://hub.docker.com/r/omarovici/search-engine-project](https://hub.docker.com/r/omarovici/search-engine-project)
 
 ### Environment Variables
 - Database credentials and connection strings are managed via environment variables in `docker-compose.yml`.
@@ -185,10 +185,12 @@ GET https://localhost:5001/api/SearchEngine?word=python&orderBy=pagerank
 
 ## Credits & Acknowledgments
 - **Team Members:**
-  - Abd El-Rahman Eldeeb (Web Scraper)
+  - Abd El-Rahman Eldeeb (Frontend Developer)
+  - Abd El-Rahman Ehab (Frontend Developer)
   - Omar Khalid (.NET Developer)
-  - Shehap Yasser (Python Developer)
-  - Haneen Hassan (Frontend Developer)
+  - Shehab Mohamed (.NET Developer)
+  - Shehab Yasser (Python Developer)
+  - Haneen Hassan (Python Developer)
 - **Special Thanks:**
   - Open source libraries and the .NET, Python, and SQL Server communities.
 
@@ -227,3 +229,34 @@ GET https://localhost:5001/api/SearchEngine?word=python&orderBy=pagerank
 - Deploy demo version online.
 
 ---
+
+## Docker Hub & GitHub Links
+
+- **Docker Hub:** [omarovici/search-engine-project](https://hub.docker.com/r/omarovici/search-engine-project)
+- **GitHub:** [omarovici/Search-Engine-Project](https://github.com/omarovici/Search-Engine-Project)
+
+---
+
+## Running with Docker Hub Image
+
+You can pull the pre-built backend image from Docker Hub and run the full stack using Docker Compose.
+
+1. **Pull the backend image:**
+   ```bash
+   docker pull omarovici/search-engine-project:latest
+   ```
+2. **Update your `docker-compose.yml` (if needed):**
+   Ensure the `backend` service uses the image:
+   ```yaml
+   services:
+     backend:
+       image: omarovici/search-engine-project:latest
+       # ... other settings ...
+   ```
+3. **Start the application:**
+   ```bash
+   docker compose up
+   ```
+   This will start both the backend and SQL Server containers using the pulled image.
+
+You can view the image on Docker Hub: [omarovici/search-engine-project](https://hub.docker.com/r/omarovici/search-engine-project)
