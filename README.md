@@ -186,9 +186,7 @@ GET https://localhost:5001/api/SearchEngine?word=python&orderBy=pagerank
 ## Credits & Acknowledgments
 - **Team Members:**
   - Abd El-Rahman Eldeeb (Frontend Developer)
-  - Abd El-Rahman Ehab (Frontend Developer)
   - Omar Khalid (.NET Developer)
-  - Shehab Mohamed (.NET Developer)
   - Shehab Yasser (Python Developer)
   - Haneen Hassan (Python Developer)
 - **Special Thanks:**
